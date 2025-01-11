@@ -1,1 +1,3 @@
-# SocialMediaTBD
+# Social Media -> Name is TBD
+
+This is a social media website/app that has unique features in it and be the next upcoming best Social Networking Website on the planet. Also, We are trying to implement the most popular features from other social networks such from X (formerly twitter), Reddit, Discord etc. Which will involve User interface (FrontEnd) for users to stay on our website/application. Also, help users who have a disability to access the website without any troubles (Accessibility). We will be the next people to develop something big. TikTok is getting banned in the US and we will be the next up to develop something even better. It will showcase Feeds, Trends, forums, (possibility chatrooms), user policy, Security, Auth (Username and Password), and much more features. Including but not limited to, a customization in the user's profile to customize to their own liking (profile picture, banners, bio, status and much more). 
