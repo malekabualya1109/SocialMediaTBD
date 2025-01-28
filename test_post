@@ -1,0 +1,18 @@
+def main():
+    print("Write your post below (type 'END' on a new line to finish):")
+
+    post = []
+    while True:
+        line = input()  # Allow the user to press enter for a new line
+        if line.strip().upper() == "END":  # Check if the user typed 'END'
+            break
+        post.append(line)  # Add the line to the post
+
+    # Display the full post
+    print("\nYour post:")
+    print("-" * 40)
+    print("\n".join(post))  # Join all lines into one block of text
+    print("-" * 40)
+
+if __name__ == "__main__":
+    main()
