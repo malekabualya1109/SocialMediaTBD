@@ -6,6 +6,7 @@
 # Perhaps later, the same code can be ran on rented GPUs with the full DeepSeek-R1 model by simply erasing "-Distill-Qwen-1.5B" from the model name.
 # Or perhaps this plan is too expensive/ambitious or another plan reveals itself as better.
 # This is a basic implementation. There is more that can be done to improve this, like (for starters) perhaps a command line interface for the user to input their own messages.
+# Maybe I need the pull request URL, so I will try this again and get it before merging, and maybe I can find how to send the email to collaberators.
 
 # pipelines as a helper is simpler than the other example
 from transformers import pipeline
