@@ -23,7 +23,7 @@ output = pipe(messages)
 
 print(output)
 
-# printed output:
+# command line input and output:
 
 # $ time python3 r1Distilled.py
 # [{'generated_text': [{'role': 'user', 'content': 'Compare this distilled DeepSeek-R1 to the larger R1?'}, {'role': 'assistant', 'content': '<think>\n\n</think>\n\nDeepSeek-R1 is designed with a deep learning architecture to tackle complex tasks, while R1 is a more general AI model. Both are powerful tools in their respective domains.'}]}]
