@@ -1,6 +1,6 @@
 
 
-# This code dervies from the Hugging Face https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B?library=transformers 
+# This code derives from the Hugging Face https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B?library=transformers 
 # for the DeepSeek-R1-Distill-Qwen-1.5B (distilled version of DeepSeek-R1) model.
 # My purpose for using this model is to make code that runs on my smaller machine or on cheaper/free cloud services.
 # Perhaps later, the same code can be ran on rented GPUs with the full DeepSeek-R1 model by simply erasing "-Distill-Qwen-1.5B" from the model name.
