@@ -22,3 +22,11 @@ pipe = pipeline("text-generation", model="deepseek-ai/DeepSeek-R1-Distill-Qwen-1
 output = pipe(messages)
 
 print(output)
+
+
+# $ time python3 r1Distilled.py
+# [{'generated_text': [{'role': 'user', 'content': 'Compare this distilled DeepSeek-R1 to the larger R1?'}, {'role': 'assistant', 'content': '<think>\n\n</think>\n\nDeepSeek-R1 is designed with a deep learning architecture to tackle complex tasks, while R1 is a more general AI model. Both are powerful tools in their respective domains.'}]}]
+
+# real    0m5.709s
+# user    0m6.462s
+# sys     0m3.008s
