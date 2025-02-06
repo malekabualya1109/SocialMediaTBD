@@ -1,0 +1,79 @@
+/*Body settings for html pages*/
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/*Dashboard layout, layout of html page four sections*/
+.dashboard{
+  display:grid;
+  grid-template-columns:1fr 3fr;
+  grid-template-rows:auto 1fr auto;
+  grid-template-areas: 
+  "header header"
+  "sidebar main"
+  "footer footer";
+  gap:10px;
+  height:100vh;  
+  background-color: black;
+}
+
+/*Create basic design layout of dashboard items*/
+header,.sidebar,.main,.footer{
+  color:black;
+  text-align:center;
+  margin:0; 
+  font-size:1.2em;
+  box-sizing:border-box;
+}
+
+/*Set up of the navigation bar*/
+.navigation{
+  grid-area:header; 
+  width:100%; 
+  justify-content:space-between;
+  align-items:center;
+  display:flex;
+  color:white; 
+  padding:.3rem;
+  margin:0; 
+  height:auto; 
+  background-color: #6a012b;
+}
+
+/*Header "Tea Talks"*/
+.navigation > h1 { 
+  display: flex; 
+  justify-content: center;
+  margin: 0;
+  margin-left: 1rem; 
+  text-align: center;
+  color: pink; 
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 2rem;
+  margin-bottom: 0; 
+}
+
+/*Navigation bar items (i.e. settings, user profile, etc)*/
+ul li{
+  margin-top:0; 
+  color: peachpuff; 
+  text-align: left;
+  list-style-type:none;
+  font-size:1rem; 
+  display:inline-block; 
+  margin-right: 1rem;  
+}
+
+/*list of setting info*/ 
+ul li > ul li{
+  color: peachpuff;
+  font-size: 1rem;
+  text-align: left; 
+  list-style-type: circle;
+}
+
