@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import StoryUpload from './storyUpload';
 
 function App() {
   const [message, setMessage] = useState('');
@@ -53,9 +52,7 @@ function App() {
       </header>
 
       <p>{message || 'Backend data stuff'}</p> {/* Flask message */}
-      <header className="storySection" >
-        <StoryUpload/>
-      </header>
+
       {/* Create Post Section */}
       <div>
         <textarea

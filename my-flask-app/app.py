@@ -1,9 +1,14 @@
 from flask import Flask
 from flask_cors import CORS
+from postcreation import post_bp  # Import the Blueprint
 
 app = Flask(__name__)
-CORS(app)#This will allow access the Flask api :) 
+CORS(app)  # Enable CORS for the entire Flask app
 
+# Register the post creation blueprint
+app.register_blueprint(post_bp)
+
+# Home route
 @app.route('/')
 def home():
     return "Backend message sending to front end"
