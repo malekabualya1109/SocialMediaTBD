@@ -29,7 +29,7 @@ prompt1 = sys.argv[1]
 # prompt2 = sys.argv[2]
 # print("prompt0: ", sys.argv[0])
 # print("prompt1: ", prompt1)
-if len(sys.argv) > 2:
+if len(sys.argv) == 2:
     prompt2 = sys.argv[2]
     print("prompt2: ", prompt2)
 
