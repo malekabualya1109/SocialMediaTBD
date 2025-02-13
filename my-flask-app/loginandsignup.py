@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import os
 from postcreation import post_bp 
+from uploadstory import uploadstory_bp
 
 #the python sql libra
 import pymysql
@@ -8,8 +10,18 @@ import pymysql
 app = Flask(__name__)
 CORS(app)  # This will allow requests from any origin
 
-# Register the post creation blueprint
+# this is to set up uploaded folder
+UPLOAD_FOLDER = './uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+#  create the uploads folder if it doesn't exist
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+
+# Register the blueprint
 app.register_blueprint(post_bp)
+app.register_blueprint(uploadstory_bp)
 
 # Home route
 #had to add this again so that it wouldnt create a failed message on top
