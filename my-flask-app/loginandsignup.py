@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
-from postcreation import post_bp 
+from postcreation import post_bp
 from uploadstory import uploadstory_bp
 
 #the python sql libra

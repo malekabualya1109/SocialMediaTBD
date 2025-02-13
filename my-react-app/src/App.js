@@ -1,27 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import StoryUpload from './storyUpload';
+import ViewPosts from './ViewPosts'; // ✅ Added ViewPosts Component
 
 function App() {
   const [message, setMessage] = useState('');
   const [content, setContent] = useState('');
   const [postMessage, setPostMessage] = useState('');
-
+  const [posts, setPosts] = useState([]);  // ✅ Added posts state
 
   // Fatimah: variables for users 
-
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [newUser, setNewUser] = useState(false);
 
   // Fatimah : variables to set up username and passwords
-
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  //Fatimah: variables to show errors for login
+  // Fatimah: variables to show errors for login
   const [authMessage, setAuthMessage] = useState('');
 
+  // ✅ Fetch posts from backend (FR2)
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/posts');
+      const data = await response.json();
+      setPosts(data);
+    } catch (error) {
+      console.error("❌ Error fetching posts:", error);
+    }
+  };
 
+  useEffect(() => {
+    fetchPosts();  // ✅ Fetch posts when the app loads
+  }, []);
 
   useEffect(() => {
     // Fetch data from Flask backend (message from home route "/")
@@ -31,102 +43,91 @@ function App() {
       .catch((error) => console.log('Error fetching data:', error));
   }, []);
 
-  // Function to handle post submission
+  // Function to handle post submission (MALEK)
   const handlePost = async () => {
+    console.log("✅ Post button clicked");
+  
+    if (!content.trim()) {
+      console.error("❌ Cannot post an empty message");
+      return;
+    }
+  
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/posts', {
+      console.log("📡 Sending request to backend...");
+  
+      const response = await fetch('http://127.0.0.1:5000/api/posts', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_id: 1, // Replace with dynamic user ID if needed
-          content,
+          user_id: 1,  // Replace with actual user ID if needed
+          content: content, 
         }),
       });
-
+  
+      console.log("📡 API request sent!");
+  
       const data = await response.json();
       if (response.status === 201) {
-        setPostMessage('Post created successfully!');
-        setContent(''); // Clear textarea
+        console.log("✅ Post successful:", data);
+        setContent("");  // ✅ Clear input box
+  
+        // ✅ Immediately update the posts list **without needing a refresh**
+        setPosts((prevPosts) => [data.post, ...prevPosts]);
+  
       } else {
-        setPostMessage('Error creating post');
+        console.error("❌ Post failed:", data);
       }
     } catch (error) {
-      setPostMessage('Failed to connect to backend');
+      console.error("❌ Failed to connect to backend:", error);
     }
   };
+  
 
-
-  //Fatimah: created the handle login fucntion that handles logging in
-
-  const handleLogin = async() =>{
-
-    // try only works with catch, otherwise it wont work
-
-    try{
-      const response = await fetch('http://127.0.0.1:5000/api/login',{
+  // Fatimah: created the handle login function that handles logging in
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({username, password}),
+        body: JSON.stringify({ username, password }),
       }); 
       const data = await response.json();
 
-      if (response.ok){
-
+      if (response.ok) {
         setIsAuthenticated(true);
-        setAuthMessage('You logged in successfully. Welcome in Pal');
-
+        setAuthMessage('You logged in successfully. Welcome to Tea Talks!');
+      } else {
+        setAuthMessage(data.error || 'Login failed.');
       }
-
-      else {
-        setAuthMessage( data.error || 'loggin failed pal');
-      }
-
-    }
-
-    catch (error) {
+    } catch (error) {
       setAuthMessage('Error connecting to server');
     }
+  };
 
-};
-
-// Fatimah: created the sign up function
-
-  const handleSignUp = async() =>{
-
-    // try only works with catch, otherwise it wont work
-
-    try{
-      const response = await fetch('http://127.0.0.1:5000/api/signup',{
-         method: 'POST',
+  // Fatimah: created the sign-up function
+  const handleSignUp = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/signup', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       }); 
       const data = await response.json();
 
-      if (response.ok){
-
+      if (response.ok) {
         setIsAuthenticated(true);
-        setAuthMessage('You logged in successfully. Welcome ib Pal');
-
+        setAuthMessage('You signed up successfully. Welcome to Tea Talks!');
+      } else {
+        setAuthMessage(data.error || 'Signup failed.');
       }
-
-      else {
-        setAuthMessage(data.error || 'loggin failed pal');
-      }
-
-    }
-
-    catch (error) {
+    } catch (error) {
       setAuthMessage('Error connecting to server');
     }
-
-};
-
-
+  };
 
   return (
     <div className="App">
@@ -142,10 +143,8 @@ function App() {
       {/* Display the fetched message from Flask */}
       <p>{message || 'Backend data stuff'}</p>
 
-      
-     { /*logginn button and sign up button*/}
+      {/* Login and sign-up button */}
       {!isAuthenticated && (
-
         <div className="auth-container">
           <h2>{newUser ? 'Sign Up' : 'Login'}</h2>
           <input
@@ -162,14 +161,14 @@ function App() {
             onChange={(e) => setPassword(e.target.value)}
           />
           <br />
-          <button onClick={newUser ? handleSignUp: handleLogin}>
+          <button onClick={newUser ? handleSignUp : handleLogin}>
             {newUser ? 'Sign Up' : 'Login'}
           </button>
           <p>{authMessage}</p>
           <p
             style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
             onClick={() => {
-              // Toggle between login and sign up modes
+              // Toggle between login and sign-up modes
               setNewUser(!newUser);
               setAuthMessage('');
             }}
@@ -179,7 +178,7 @@ function App() {
         </div>
       )}
 
-      {/* this shows only if someone logged in or signup*/}
+      {/* This shows only if someone is logged in */}
       {isAuthenticated && (
         <>
           <header className="storySection">
@@ -188,12 +187,15 @@ function App() {
           <div>
             <textarea
               value={content}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={(e) => setContent(e.target.value)}  // ✅ Ensure state updates
               placeholder="Write your post..."
             />
             <button onClick={handlePost}>Post</button>
             <p>{postMessage}</p>
           </div>
+
+          {/* ✅ View Posts (FR2) */}
+          <ViewPosts posts={posts} setPosts={setPosts} />
         </>
       )}
     </div>
