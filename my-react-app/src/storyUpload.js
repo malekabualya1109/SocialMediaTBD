@@ -32,7 +32,7 @@ function StoryUpload() {
 
         try {
             //make a HTTP POST request to upload story
-            const response = await axios.post('/api/uploadStory', formData, {
+            const response = await axios.post('http://localhost:5000/api/uploadStory', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
                 onUploadProgress: (progressEvent) => {
                     // calculate and update the upload progress percentage
