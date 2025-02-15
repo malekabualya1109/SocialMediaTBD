@@ -50,6 +50,10 @@ def signup():
     password = data.get('password', '').strip()
     username = data.get('username', '').strip()
 
+    #list of interests:
+    selected_interests = data.get('interests', [])
+
+
     if not username or not password:
         return jsonify({"error": "Username or password cannot be empty"}), 400
 
@@ -67,12 +71,9 @@ def signup():
 
         query ='select * from data where username= %s'
         mycursor.execute(query, (username,))
-
-
         existing= mycursor.fetchone()
 
-        if existing !=None:
-            messagebox.showerror('Error', 'Username already exists!')
+        if existing:
             return jsonify({"error": "Username already exist"}), 400
 
         else:
@@ -92,6 +93,7 @@ def signup():
 
     query=('insert into data(username, password) values(%s,%s)')
     mycursor.execute(query, (username, password))
+    user_id = mycursor.lastrowid  # get the newly created user's ID
     theSQL.commit()
     theSQL.close()
 
