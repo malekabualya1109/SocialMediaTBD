@@ -1,10 +1,12 @@
 
+/*Emma's Code for app layout*/ 
 .App {
   text-align: center;
   background-color: #8D0039;
   height: 100vh; 
 }
 
+/*Emma: app header layout*/ 
 .App-header {
   background-color: #6a012b; 
   min-height: 100vh;
