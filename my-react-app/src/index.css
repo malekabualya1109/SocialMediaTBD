@@ -1,3 +1,5 @@
+/*Emma's code on all the CSS styling!*/
+
 /*Body settings for html pages*/
 body {
   margin: 0;
@@ -7,7 +9,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-/*blah blah blah test*/
+
 /*Dashboard layout, layout of html page four sections*/
 .dashboard{
   display:grid;
@@ -15,7 +17,7 @@ body {
   grid-template-rows:auto 1fr auto;
   grid-template-areas: 
   "header header"
-  "sidebar main"
+  "main main"
   "footer footer";
   gap:10px;
   height:100vh;  
@@ -31,7 +33,33 @@ header,.sidebar,.main,.footer{
   box-sizing:border-box;
 }
 
-/*Set up of the navigation bar*/
+/*Set up of navigation bar when user has not logged in*/
+.navigation1{
+  grid-area:header; 
+  width:100%; 
+  align-items:center;
+  display:flex; 
+  justify-content: center;
+  padding:.3rem; 
+  height:auto; 
+  background-color: #6a012b;
+}
+
+/*Header "Tea Talks"*/
+.navigation1 > h1 { 
+  display: flex; 
+  justify-content: center;
+  align-items: center; 
+  text-align: center;
+  color: pink; 
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 3rem; 
+  margin: .8rem; 
+}
+
+
+
+/*Set up of the navigation bar when user has logged in*/
 .navigation{
   grid-area:header; 
   width:100%; 
@@ -69,6 +97,11 @@ ul li{
   margin-right: 1rem;  
 }
 
+/*Hover effect for navigation bar items*/
+ul li:hover{
+  color: orange; 
+}
+
 /*list of setting info*/ 
 ul li > ul li{
   color: peachpuff;
@@ -77,7 +110,26 @@ ul li > ul li{
   list-style-type: circle;
 }
 
+/*Story margin*/
 .storySection {
   margin-bottom: 2rem;
 }
 
+/*Adjustments to the settings drop down menu*/
+.setting-menu{
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  z-index: 1;
+  padding: 0%;
+}
+
+/*Readjust font size for setting drop down menu*/
+.setting-menu li{
+  font-size: .9rem; 
+}
+
+/*Hover effect for setting menu items*/
+.setting-menu li:hover{
+  color: orange; 
+}

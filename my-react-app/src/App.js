@@ -128,20 +128,49 @@ function App() {
       setAuthMessage('Error connecting to server');
     }
   };
+  
+  /*Emma */
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+
+  /*Emma */
+  const toggleDropdown = () => {
+    setIsDropdownVisible(!isDropdownVisible);
+  };
+
 
   return (
+
+    /*Emma: Navigation Bar/Page Layout*/
     <div className="App">
-      <header className="navigation">
+      {!isAuthenticated && (
+      <header className="navigation1">
+        <h1>Welcome to Tea Talks</h1>
+      </header>
+      )} 
+        {isAuthenticated && (
+          <header className="navigation">
         <h1>Tea Talks</h1>
         <ul>
           <li>Notifications</li>
           <li>User Profile</li>
-          <li>Settings</li>
-        </ul>
-      </header>
+          <li>
+            <div className = "setting" onClick={toggleDropdown}>
+              Settings
+                {isDropdownVisible && (
+                <ul className = "setting-menu">
+                  <li>Change Password</li>
+                  <li>Update Username</li>
+                </ul>
+                )} 
+              </div>
+          </li>
+        </ul> 
+        </header>
+      )} 
+
 
       {/* Display the fetched message from Flask */}
-      <p>{message || 'Backend data stuff'}</p>
+    {/*  <p>{message || 'Backend data stuff'}</p>*/}
 
       {/* Login and sign-up button */}
       {!isAuthenticated && (
