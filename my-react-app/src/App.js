@@ -20,6 +20,32 @@ function App() {
   // Fatimah: variables to show errors for login
   const [authMessage, setAuthMessage] = useState('');
 
+  // Fatimah: Pick Interests popup
+  const [showInterestsPrompt, setShowInterestsPrompt] = useState(false);
+
+
+  // Fatimah: Hard-coded available interests for now
+  const availableInterests = [
+    { id: 1, label: 'Music' },
+    { id: 2, label: 'Sports' },
+    { id: 3, label: 'Movies' },
+    { id: 4, label: 'Photography' },
+  ];
+  const [selectedInterests, setSelectedInterests] = useState([]);
+
+
+    // Fatimah: Toggle an interest
+  const handleInterestChange = (interestId) => {
+    setSelectedInterests((prev) => {
+      if (prev.includes(interestId)) {
+        return prev.filter((id) => id !== interestId);
+      } else {
+        return [...prev, interestId];
+      }
+    });
+  };
+
+
   // ✅ Fetch posts from backend (FR2)
   const fetchPosts = async () => {
     try {
@@ -121,11 +147,37 @@ function App() {
       if (response.ok) {
         setIsAuthenticated(true);
         setAuthMessage('You signed up successfully. Welcome to Tea Talks!');
+        setShowInterestsPrompt(true);
       } else {
         setAuthMessage(data.error || 'Signup failed.');
       }
     } catch (error) {
       setAuthMessage('Error connecting to server');
+    }
+  };
+
+  //Fatimah: the interest bar:
+    // Save selected interests (after sign up)
+  const handleSaveInterests = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/set_interests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          interests: selectedInterests,
+        }),
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        // Hide the prompt
+        setShowInterestsPrompt(false);
+        console.log('Interests saved successfully!');
+      } else {
+        console.error('Error saving interests:', data);
+      }
+    } catch (error) {
+      console.error('Error connecting to server:', error);
     }
   };
   
@@ -227,6 +279,36 @@ function App() {
           <ViewPosts posts={posts} setPosts={setPosts} />
         </>
       )}
+
+     
+
+      {/* This interest prompt only shows only if someone signs up */}
+
+      {showInterestsPrompt && (
+        <div className="interest-modal">
+          <div className="interest-modal-content">
+
+            <h3>Pick your interests</h3>
+            {availableInterests.map((intObj) => (
+              <label key={intObj.id} style={{ display: 'block' }}>
+                <input
+                  type="checkbox"
+                  checked={selectedInterests.includes(intObj.id)}
+                  onChange={() => handleInterestChange(intObj.id)}
+                />
+                {intObj.label}
+              </label>
+            ))}
+
+            <button onClick={handleSaveInterests} style={{ marginTop: '10px' }}>
+              Save Interests
+            </button>
+          </div>
+        </div>
+      )}
+      
+  
+
     </div>
   );
 }
