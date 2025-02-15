@@ -94,10 +94,6 @@ def signup():
     mycursor.execute(query, (username, password))
     theSQL.commit()
     theSQL.close()
-    
-
-
-
 
     return jsonify({"message": "User created successfully!"}), 201
 
