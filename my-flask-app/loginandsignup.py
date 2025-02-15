@@ -141,6 +141,33 @@ def login():
     theSQL.close()
 
 
+# the interst part and i'm not done with it yet because i didn't completely store this in the databse
+
+@app.route('/api/set_interests', methods=['POST'])
+def set_interests():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    selected_interests = data.get('interests', [])
+
+
+    try:
+        theSQL = pymysql.connect(host='localhost', user='root', password=' Rongon@@12Fat', database='userdata')
+        mycursor = theSQL.cursor()
+    except:
+        return jsonify({"error": "Could not connect to database"}), 500
+
+
+    # Insert each selected interest
+    for interest_id in selected_interests:
+        query = 'insert into user_interests (user_id, interest_id) values (%s, %s)'
+        mycursor.execute(query, (user_id, interest_id))
+
+    theSQL.commit()
+    theSQL.close()
+
+    return jsonify({"message": "Interests saved successfully"}), 200
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)
