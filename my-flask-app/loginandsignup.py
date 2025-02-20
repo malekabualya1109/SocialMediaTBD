@@ -60,6 +60,9 @@ def signup():
     else:
         try:
             theSQL= pymysql.connect(host='localhost', user='root', password='Rongon@@12Fat')
+
+            #store password in the a
+            # third party autentificati
             mycursor=theSQL.cursor()
         except:
             messagebox.showerror('error')
@@ -116,6 +119,8 @@ def login():
         # Connect to the existing 'userdata' database
         theSQL= pymysql.connect(host='localhost', user='root', password='Rongon@@12Fat', database='userdata'  )
         mycursor = theSQL.cursor()
+
+        #store password in a json file
 
     except:
         return jsonify({"error": "Could not connect to the database"}), 500
