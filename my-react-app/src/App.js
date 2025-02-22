@@ -3,6 +3,7 @@ import './App.css';
 import StoryUpload from './storyUpload';
 import ViewPosts from './ViewPosts'; // ✅ Added ViewPosts Component
 
+
 function App() {
   const [message, setMessage] = useState('');
   const [content, setContent] = useState('');
@@ -227,7 +228,11 @@ function App() {
       {/* Login and sign-up button */}
       {!isAuthenticated && (
         <div className="auth-container">
+           <div class = "mugIcon">
+            <i class="fa-solid fa-mug-hot"></i>
+          </div> 
           <h2>{newUser ? 'Sign Up' : 'Login'}</h2>
+          {/*Emma added this bit in here with the mug icon*/}
           <input
             type="text"
             placeholder="Username"
@@ -247,7 +252,6 @@ function App() {
           </button>
           <p>{authMessage}</p>
           <p
-            style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
             onClick={() => {
               // Toggle between login and sign-up modes
               setNewUser(!newUser);
