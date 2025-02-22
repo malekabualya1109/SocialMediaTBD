@@ -53,11 +53,9 @@ header,.sidebar,.main,.footer{
   text-align: center;
   color: pink; 
   font-family: 'Times New Roman', Times, serif;
-  font-size: 3rem; 
+  font-size: 4rem; 
   margin: .8rem; 
 }
-
-
 
 /*Set up of the navigation bar when user has logged in*/
 .navigation{
@@ -133,3 +131,75 @@ ul li > ul li{
 .setting-menu li:hover{
   color: orange; 
 }
+
+/*Icon*/
+.mugIcon{
+  color: white; 
+  font-size: 7rem; 
+  margin-top: 3rem; 
+  margin-bottom: 0rem;
+  margin-left: 1.5rem;  
+}
+
+/*Login sizing*/
+.auth-container > h2{
+  color: #4f0000; 
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 3.5rem; 
+  margin-bottom: 1.2rem; 
+  margin-top: 0rem; 
+}
+
+/*Hyperlink for setting up the account*/
+.auth-container > p{
+  font-size: 1.1rem; 
+  font-weight: bold;
+  color: #4f0000; 
+  margin-bottom: 2rem; 
+}
+
+/*Hyperlink for setting up account hover effect*/
+.auth-container > p:hover{
+  color: pink; /*Not currently working*/ 
+}
+
+/*Text field adjustments for entering login information*/
+.auth-container > input {
+  width: 16rem; 
+  padding: .7rem; 
+  margin-bottom: 1.2rem; 
+  font-size: 1rem;
+  margin-left: 0rem;
+  text-align: left; 
+}
+
+/*Login Button*/ 
+.auth-container > button{
+  padding: 1rem 2.3rem; 
+  background-color: pink;
+  border: none; 
+  border-radius: 6%;
+  margin-top: 1.25rem; 
+  margin-bottom: 0; 
+  font-size: 1rem; 
+}
+
+/*Hovering over Login Button*/
+.auth-container > button:hover{
+  background-color:#6a012b; 
+}
+
+/*Add pink border effect*/
+.auth-container{
+  margin-top: 2rem; 
+  border: 1rem solid pink;
+  padding: 20px; 
+  border-radius: 10%;
+  width: 30rem; 
+  height: 35rem;  
+  margin-left: 30rem; 
+}
+
+/*New page for settings!*/
+/*Adding friends*/
+/*Organizing content within the profile page itself*/
