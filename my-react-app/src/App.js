@@ -24,6 +24,10 @@ function App() {
   const [showInterestsPrompt, setShowInterestsPrompt] = useState(false);
 
 
+  //Fatimah:user id for the interest
+  const[userId, setUserId] = useState(false);
+
+
   // Fatimah: Hard-coded available interests for now
   const availableInterests = [
     { id: 1, label: 'Music' },
@@ -146,6 +150,9 @@ function App() {
 
       if (response.ok) {
         setIsAuthenticated(true);
+        //when you sign up, the user id becomes the user id of the one who just signed up
+        setUserId(data.user_id);
+
         setAuthMessage('You signed up successfully. Welcome to Tea Talks!');
         setShowInterestsPrompt(true);
       } else {
@@ -164,6 +171,7 @@ function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          user_id: userId, // the user id cause why not
           interests: selectedInterests,
         }),
       });
