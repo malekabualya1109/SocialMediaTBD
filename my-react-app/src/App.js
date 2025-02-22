@@ -3,6 +3,7 @@ import './App.css';
 import StoryUpload from './storyUpload';
 import ViewPosts from './ViewPosts'; // ✅ Added ViewPosts Component
 
+
 function App() {
   const [message, setMessage] = useState('');
   const [content, setContent] = useState('');
@@ -22,6 +23,10 @@ function App() {
 
   // Fatimah: Pick Interests popup
   const [showInterestsPrompt, setShowInterestsPrompt] = useState(false);
+
+
+  //Fatimah:user id for the interest
+  const[userId, setUserId] = useState(false);
 
 
   // Fatimah: Hard-coded available interests for now
@@ -146,6 +151,9 @@ function App() {
 
       if (response.ok) {
         setIsAuthenticated(true);
+        //when you sign up, the user id becomes the user id of the one who just signed up
+        setUserId(data.user_id);
+
         setAuthMessage('You signed up successfully. Welcome to Tea Talks!');
         setShowInterestsPrompt(true);
       } else {
@@ -164,6 +172,7 @@ function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          user_id: userId, // the user id cause why not
           interests: selectedInterests,
         }),
       });
@@ -227,7 +236,11 @@ function App() {
       {/* Login and sign-up button */}
       {!isAuthenticated && (
         <div className="auth-container">
+           <div class = "mugIcon">
+            <i class="fa-solid fa-mug-hot"></i>
+          </div> 
           <h2>{newUser ? 'Sign Up' : 'Login'}</h2>
+          {/*Emma added this bit in here with the mug icon*/}
           <input
             type="text"
             placeholder="Username"
@@ -247,7 +260,6 @@ function App() {
           </button>
           <p>{authMessage}</p>
           <p
-            style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
             onClick={() => {
               // Toggle between login and sign-up modes
               setNewUser(!newUser);
