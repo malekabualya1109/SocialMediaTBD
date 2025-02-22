@@ -44,36 +44,41 @@ def home():
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
-    data = request.get_json()
 
-    # Example: simple validation
+    data = request.get_json()
     password = data.get('password', '').strip()
     username = data.get('username', '').strip()
 
     #list of interests:
     selected_interests = data.get('interests', [])
 
+    #we don't want that to be empty 
 
     if not username or not password:
         return jsonify({"error": "Username or password cannot be empty"}), 400
 
-    else:
-        try:
-            theSQL= pymysql.connect(host='localhost', user='tea', password='')
+    try:
+
+        # connection to dbms
+        theSQL= pymysql.connect(host='localhost', user='tea', password='')
 
             #store password in the a
             # third party autentificati
 
-            #new user in  the database that has no password
-            mycursor=theSQL.cursor()
-        except:
-            messagebox.showerror('error')
-            return
+        #new user in  the database that has no password
+        mycursor=theSQL.cursor()
 
-    try:
+        query='create database if not exists userdata'
+        mycursor.execute(query)
+        query='use userdata'
+        mycursor.execute(query)
 
-        #if the username exist not working for now, will perfect it later
+        #data table cause why not
+        query='create table if not exists data(id int auto_increment primary key not null, username varchar(100), password varchar(20))'
+        mycursor.execute(query)
 
+
+        # i wanna check if the username doesnt already exist
         query ='select * from data where username= %s'
         mycursor.execute(query, (username,))
         existing= mycursor.fetchone()
@@ -81,26 +86,27 @@ def signup():
         if existing:
             return jsonify({"error": "Username already exist"}), 400
 
-        else:
+        
+        # inserting the new user in the dbms
+        query=('insert into data(username, password) values(%s, %s)')
+        mycursor.execute(query, (username, password))
+        user_id = mycursor.lastrowid  # get the newly created user's ID
 
-            query='create database if not exists userdata'
-            mycursor.execute(query)
-            query='use userdata'
-            mycursor.execute(query)
-            query='create table if not exists data(id int auto_increment primary key not null, username varchar(100), password varchar(20))'
-            mycursor.execute(query)
 
-    except:
-        mycursor.execute('use userdata')
+
+        theSQL.commit()
+        theSQL.close()
+
+        return jsonify({"message": "User created successfully!", "user_id": user_id}), 201
+
+
+    except :
+        print("Error in signup route:", e)
+        return jsonify({"error": str(e)}), 500
 
     
     #insert into the ldata
 
-    query=('insert into data(username, password) values(%s,%s)')
-    mycursor.execute(query, (username, password))
-    user_id = mycursor.lastrowid  # get the newly created user's ID
-    theSQL.commit()
-    theSQL.close()
 
     return jsonify({"message": "User created successfully!"}), 201
 
@@ -109,11 +115,11 @@ def signup():
 def login():
     data = request.get_json()
 
-    # Extract the username and password from the request
+    # extract the username and password from the request
     username = data.get('username', '').strip()
     password = data.get('password', '').strip()
 
-    # Simple validation
+
     if not username or not password:
         return jsonify({"error": "Username or password cannot be empty"}), 400
 
@@ -128,7 +134,7 @@ def login():
         return jsonify({"error": "Could not connect to the database"}), 500
 
     try:
-        # Prepare a SELECT statement to check if the user exists with matching credentials
+        # matching cause why not
         query = 'select *from data where username = %s and password = %s'
         mycursor.execute(query, (username, password))
 
@@ -141,7 +147,7 @@ def login():
             # If user not found
             return jsonify({"error": "Invalid credentials"}), 401
 
-    except Exception as e:
+    except:
         print("Error during login query:", e)
         return jsonify({"error": "Database query failed"}), 500
 
@@ -159,30 +165,28 @@ def set_interests():
     selected_interests = data.get('interests', [])
 
 
+    #table creation and stuff
     try:
         theSQL = pymysql.connect(host='localhost', user='tea', password='', database='userdata')
         mycursor = theSQL.cursor()
+        query='create table if not exists user_interests(id int auto_increment primary key, user_id int not null, interest_id int not null)'
+
+        mycursor.execute(query)
+
+        for interest_id in selected_interests:
+            query = 'insert into user_interests (user_id, interest_id) values (%s, %s)'
+            mycursor.execute(query, (user_id, interest_id))
+
+
+        theSQL.commit()
+        theSQL.close()
+
+        return jsonify({"message": "Interests saved successfully"}), 200
+
+
     except:
         return jsonify({"error": "Could not connect to database"}), 500
     
-
-    mycursor.execute('drop table if exists user_interests')
-    query='create table if not exists user_interests(id int auto_increment primary key, user_id int not null, insterest_id int not null)'
-    mycursor.execute(query)
-
-
-    # Insert each selected interest
-    for interest_id in selected_interests:
-        query = 'insert into user_interests (user_id, interest_id) values (%s, %s)'
-        mycursor.execute(query, (user_id, interest_id))
-
-    theSQL.commit()
-    theSQL.close()
-
-    return jsonify({"message": "Interests saved successfully"}), 200
-
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
