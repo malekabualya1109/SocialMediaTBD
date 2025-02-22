@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
+import './dailyForum.css';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 
-function App() {
+function DailyForum() {
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
   const [username, setUsername] = useState('Maria'); // Default username
@@ -110,7 +110,7 @@ function App() {
   );
 }
 
-export default App;
+export default DailyForum;
 
 
 
