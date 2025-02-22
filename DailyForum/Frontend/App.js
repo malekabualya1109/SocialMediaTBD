@@ -6,13 +6,14 @@ import data from '@emoji-mart/data';
 function App() {
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
+  const [username, setUsername] = useState('Maria'); // Default username
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   // Fetch comments from the backend
   const fetchComments = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/comments');
-      const data = await response.json();  // Parse response as JSON
+      const response = await fetch('http://localhost:8080/comments'); // Adjusted endpoint
+      const data = await response.json();
       setComments(data);
     } catch (error) {
       console.error('Error fetching comments:', error);
@@ -21,68 +22,84 @@ function App() {
 
   useEffect(() => {
     fetchComments();
-    const interval = setInterval(fetchComments, 10000);
+    const interval = setInterval(fetchComments, 5000); // Update every 5 seconds
     return () => clearInterval(interval);
   }, []);
 
-  const handleSendComment = () => {
+  const handleSendComment = async () => {
     if (comment.trim()) {
       if (window.confirm('Are you sure you want to submit?')) {
-        fetch('http://localhost:8080/api/comments', {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain' },
-          body: comment,
-        })
-          .then(response => {
-            if (response.ok) {
-              setComments([...comments, { timestamp: new Date().toLocaleString(), text: comment }]);
-              setComment('');
-            } else {
-              console.error('Failed to send comment.');
-            }
-          })
-          .catch(error => console.error('Error sending comment:', error));
+        try {
+          const response = await fetch('http://localhost:8080/comments', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, text: comment }), // Send JSON instead of plain text
+          });
+
+          if (response.ok) {
+            setComment('');
+            fetchComments(); // Refresh comments after posting
+          } else {
+            console.error('Failed to send comment.');
+          }
+        } catch (error) {
+          console.error('Error sending comment:', error);
+        }
       }
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSendComment();
+  const handleLike = async (timestamp) => {
+    try {
+      const response = await fetch('http://localhost:8080/comments/like', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ timestamp }), // Send timestamp to like the comment
+      });
+
+      if (response.ok) {
+        fetchComments(); // Refresh comments to update like count
+      }
+    } catch (error) {
+      console.error('Error liking comment:', error);
     }
   };
 
   return (
     <div className="container">
-      <h1>Daily Forum</h1>
+      <h1>Tea Talk</h1>
+
+      {/* Username Selection */}
+      <label>Select Username: </label>
+      <select value={username} onChange={(e) => setUsername(e.target.value)}>
+        <option value="Maria">User1</option>
+        <option value="Cielo">User2</option>
+      </select>
+
       <div className="comments-section">
         {comments.length > 0 ? (
           comments.map((cmt, index) => (
             <div key={index} className="comment-box">
-              <p><strong>{cmt.timestamp}</strong></p>
+              <p><strong>{cmt.username} - {cmt.timestamp}</strong></p>
               <p>{cmt.text}</p>
+              <button onClick={() => handleLike(cmt.timestamp)}>👍 {cmt.likes}</button>
             </div>
           ))
         ) : (
           <p>No comments yet. Be the first to comment!</p>
         )}
       </div>
+
       <div className="comment-input">
         <input
           type="text"
           value={comment}
           onChange={(e) => setComment(e.target.value)}
-          onKeyDown={handleKeyPress}
           placeholder="Type your comment..."
           className="input-bar"
         />
-        <button onClick={handleSendComment} className="send-button">
-          Send
-        </button>
-        <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="emoji-button">
-          😊
-        </button>
+        <button onClick={handleSendComment} className="send-button">Send</button>
+        <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="emoji-button">😊</button>
         {showEmojiPicker && (
           <div className="emoji-picker">
             <Picker data={data} onEmojiSelect={(emoji) => setComment(comment + emoji.native)} />
@@ -94,5 +111,6 @@ function App() {
 }
 
 export default App;
+
 
 
