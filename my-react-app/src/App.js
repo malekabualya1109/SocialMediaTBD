@@ -51,19 +51,19 @@ function App() {
   };
 
 
-  // ✅ Fetch posts from backend (FR2)
+  // Fetch posts from backend (FR2) (MALEK)
   const fetchPosts = async () => {
     try {
       const response = await fetch('http://127.0.0.1:5000/api/posts');
       const data = await response.json();
       setPosts(data);
     } catch (error) {
-      console.error("❌ Error fetching posts:", error);
+      console.error("Error fetching posts:", error);
     }
   };
 
   useEffect(() => {
-    fetchPosts();  // ✅ Fetch posts when the app loads
+    fetchPosts();  // Fetch posts when the app loads
   }, []);
 
   useEffect(() => {
@@ -76,10 +76,10 @@ function App() {
 
   // Function to handle post submission (MALEK)
   const handlePost = async () => {
-    console.log("✅ Post button clicked");
+    console.log("Post button clicked");
   
     if (!content.trim()) {
-      console.error("❌ Cannot post an empty message");
+      console.error("Cannot post an empty message");
       return;
     }
   
@@ -101,17 +101,17 @@ function App() {
   
       const data = await response.json();
       if (response.status === 201) {
-        console.log("✅ Post successful:", data);
-        setContent("");  // ✅ Clear input box
+        console.log("Post successful:", data);
+        setContent("");  // Clear input box
   
-        // ✅ Immediately update the posts list **without needing a refresh**
+        // Immediately update the posts list **without needing a refresh**
         setPosts((prevPosts) => [data.post, ...prevPosts]);
   
       } else {
-        console.error("❌ Post failed:", data);
+        console.error("Post failed:", data);
       }
     } catch (error) {
-      console.error("❌ Failed to connect to backend:", error);
+      console.error("Failed to connect to backend:", error);
     }
   };
   
