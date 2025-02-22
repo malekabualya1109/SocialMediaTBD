@@ -83,11 +83,11 @@ def signup():
 
         else:
 
-            query='create database userdata'
+            query='create database if not exists userdata'
             mycursor.execute(query)
             query='use userdata'
             mycursor.execute(query)
-            query='create table data(id int auto_increment primary key not null, username varchar(100), password varchar(20))'
+            query='create table if not exists data(id int auto_increment primary key not null, username varchar(100), password varchar(20))'
             mycursor.execute(query)
 
     except:
@@ -119,7 +119,7 @@ def login():
 
     try:
         # Connect to the existing 'userdata' database
-        theSQL= pymysql.connect(host='localhost', user='tea', password='', database='userdata'  )
+        theSQL= pymysql.connect(host='localhost', user='tea', password='', database='userdata' )
         mycursor = theSQL.cursor()
 
         #store password in a json file
@@ -152,6 +152,8 @@ def login():
 
 @app.route('/api/set_interests', methods=['POST'])
 def set_interests():
+
+    #first error, i was not creating the databse earlier, solved it yayyyys
     data = request.get_json()
     user_id = data.get('user_id')
     selected_interests = data.get('interests', [])
@@ -162,6 +164,11 @@ def set_interests():
         mycursor = theSQL.cursor()
     except:
         return jsonify({"error": "Could not connect to database"}), 500
+    
+
+    mycursor.execute('drop table if exists user_interests')
+    query='create table if not exists user_interests(id int auto_increment primary key, user_id int not null, insterest_id int not null)'
+    mycursor.execute(query)
 
 
     # Insert each selected interest
@@ -169,11 +176,11 @@ def set_interests():
         query = 'insert into user_interests (user_id, interest_id) values (%s, %s)'
         mycursor.execute(query, (user_id, interest_id))
 
-
     theSQL.commit()
     theSQL.close()
 
     return jsonify({"message": "Interests saved successfully"}), 200
+
 
 
 
