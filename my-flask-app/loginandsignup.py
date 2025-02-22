@@ -59,10 +59,12 @@ def signup():
 
     else:
         try:
-            theSQL= pymysql.connect(host='localhost', user='root', password='Rongon@@12Fat')
+            theSQL= pymysql.connect(host='localhost', user='tea', password='')
 
             #store password in the a
             # third party autentificati
+
+            #new user in  the database that has no password
             mycursor=theSQL.cursor()
         except:
             messagebox.showerror('error')
@@ -117,7 +119,7 @@ def login():
 
     try:
         # Connect to the existing 'userdata' database
-        theSQL= pymysql.connect(host='localhost', user='root', password='Rongon@@12Fat', database='userdata'  )
+        theSQL= pymysql.connect(host='localhost', user='tea', password='', database='userdata'  )
         mycursor = theSQL.cursor()
 
         #store password in a json file
@@ -156,7 +158,7 @@ def set_interests():
 
 
     try:
-        theSQL = pymysql.connect(host='localhost', user='root', password=' Rongon@@12Fat', database='userdata')
+        theSQL = pymysql.connect(host='localhost', user='tea', password='', database='userdata')
         mycursor = theSQL.cursor()
     except:
         return jsonify({"error": "Could not connect to database"}), 500
@@ -166,6 +168,7 @@ def set_interests():
     for interest_id in selected_interests:
         query = 'insert into user_interests (user_id, interest_id) values (%s, %s)'
         mycursor.execute(query, (user_id, interest_id))
+
 
     theSQL.commit()
     theSQL.close()
