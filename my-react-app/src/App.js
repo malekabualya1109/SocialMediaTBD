@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import StoryUpload from './storyUpload';
 import ViewPosts from './ViewPosts'; // ✅ Added ViewPosts Component
+import './index.css'; 
+import './userAccount.css';
 
 
 function App() {
@@ -49,7 +51,6 @@ function App() {
       }
     });
   };
-
 
   // Fetch posts from backend (FR2) (MALEK)
   const fetchPosts = async () => {
@@ -201,128 +202,139 @@ function App() {
 
   return (
 
-    /*Emma: Navigation Bar/Page Layout*/
-    <div className="App">
-      {!isAuthenticated && (
+      <div className="App">
+        
+    {!isAuthenticated && (
       <header className="navigation1">
         <h1>Welcome to Tea Talks</h1>
       </header>
-      )} 
+    )}
+    
         {isAuthenticated && (
-          <header className="navigation">
-        <h1>Tea Talks</h1>
-        <ul>
-          <li>Notifications</li>
-          <li>User Profile</li>
-          <li>
-            <div className = "setting" onClick={toggleDropdown}>
-              Settings
-                {isDropdownVisible && (
-                <ul className = "setting-menu">
-                  <li>Change Password</li>
-                  <li>Update Username</li>
-                </ul>
-                )} 
-              </div>
-          </li>
-        </ul> 
-        </header>
-      )} 
+          <>
+            <header className="header">
+              <h1>Tea Talks</h1>
+              <ul>
+                <li>Notifications</li>
+                <li>User Profile</li>
+                <li>
+                  <div className="setting" onClick={toggleDropdown}>
+                    Settings
+                    {isDropdownVisible && (
+                      <ul className="setting-menu">
+                        <li>Change Password</li>
+                        <li>Update Username</li>
+                      </ul>
+                    )}
+                  </div>
+                </li>
+              </ul>
+            </header>
 
+            <section className="sidebar">
+              <header className="storySection">
+                <StoryUpload />
+              </header>
+            </section>
 
-      {/* Display the fetched message from Flask */}
-    {/*  <p>{message || 'Backend data stuff'}</p>*/}
+            <section className="friendbar">
+              <h4>Friends List</h4>
+            </section>
 
-      {/* Login and sign-up button */}
-      {!isAuthenticated && (
-        <div className="auth-container">
-           <div class = "mugIcon">
-            <i class="fa-solid fa-mug-hot"></i>
-          </div> 
-          <h2>{newUser ? 'Sign Up' : 'Login'}</h2>
-          {/*Emma added this bit in here with the mug icon*/}
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <br />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <br />
-          <button onClick={newUser ? handleSignUp : handleLogin}>
-            {newUser ? 'Sign Up' : 'Login'}
-          </button>
-          <p>{authMessage}</p>
-          <p
-            onClick={() => {
-              // Toggle between login and sign-up modes
-              setNewUser(!newUser);
-              setAuthMessage('');
-            }}
-          >
-            {newUser ? 'Already have an account? Login' : 'New user? Sign Up'}
-          </p>
-        </div>
-      )}
-
-      {/* This shows only if someone is logged in */}
-      {isAuthenticated && (
-        <>
-          <header className="storySection">
-            <StoryUpload />
-          </header>
-          <div>
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}  // ✅ Ensure state updates
-              placeholder="Write your post..."
+            <footer className="footer">
+              <p>Copyright of WSU Computer Science Students</p>
+            </footer>
+          </>
+        )}
+    
+        {/* Display the fetched message from Flask */}
+        {/* <p>{message || 'Backend data stuff'}</p> */}
+    
+        {/* Login and sign-up button */}
+        {!isAuthenticated && (
+          <div className="auth-container">
+            {/* Emma added this bit in here with the mug icon */}
+            <div className="mugIcon">
+              <i className="fa-solid fa-mug-hot"></i>
+            </div>
+            <h2>{newUser ? 'Sign Up' : 'Login'}</h2>
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
-            <button onClick={handlePost}>Post</button>
-            <p>{postMessage}</p>
-          </div>
-
-          {/* ✅ View Posts (FR2) */}
-          <ViewPosts posts={posts} setPosts={setPosts} />
-        </>
-      )}
-
-     
-
-      {/* This interest prompt only shows only if someone signs up */}
-
-      {showInterestsPrompt && (
-        <div className="interest-modal">
-          <div className="interest-modal-content">
-
-            <h3>Pick your interests</h3>
-            {availableInterests.map((intObj) => (
-              <label key={intObj.id} style={{ display: 'block' }}>
-                <input
-                  type="checkbox"
-                  checked={selectedInterests.includes(intObj.id)}
-                  onChange={() => handleInterestChange(intObj.id)}
-                />
-                {intObj.label}
-              </label>
-            ))}
-
-            <button onClick={handleSaveInterests} style={{ marginTop: '10px' }}>
-              Save Interests
+            <br />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <br />
+            <button onClick={newUser ? handleSignUp : handleLogin}>
+              {newUser ? 'Sign Up' : 'Login'}
             </button>
+            <p>{authMessage}</p>
+            <p
+              onClick={() => {
+                // Toggle between login and sign-up modes
+                setNewUser(!newUser);
+                setAuthMessage('');
+              }}
+            >
+              {newUser ? 'Already have an account? Login' : 'New user? Sign Up'}
+            </p>
           </div>
-        </div>
-      )}
-      
-  
+        )}
+    
+        {/* This shows only if someone is logged in */}
+        {isAuthenticated && (
+          <div className="content-wrapper">
+    
+            <section className="main">
+            <div className = "viewPosts">
+                <ViewPosts posts={posts} setPosts={setPosts} />
+              </div> 
+              <div>
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)} // ✅ Ensure state updates
+                  placeholder="Write your post..."
+                />
+                <button onClick={handlePost}>Post</button>
+                <p>{postMessage}</p>
+              </div>
+              {/* ✅ View Posts (FR2) */}
 
-    </div>
-  );
+
+        {/* This interest prompt only shows if someone signs up */}
+        {showInterestsPrompt && (
+          <div className="interest-modal">
+            <div className="interest-modal-content">
+              <h3>Pick your interests</h3>
+              {availableInterests.map((intObj) => (
+                <label key={intObj.id} style={{ display: 'block' }}>
+                  <input
+                    type="checkbox"
+                    checked={selectedInterests.includes(intObj.id)}
+                    onChange={() => handleInterestChange(intObj.id)}
+                  />
+                  {intObj.label}
+                </label>
+              ))}
+              <button onClick={handleSaveInterests} style={{ marginTop: '10px' }}>
+                Save Interests
+              </button>
+            </div>
+          </div>
+        )}
+
+            </section>
+          </div>
+        )}
+      </div>    
+    );   
 }
 
 export default App;
