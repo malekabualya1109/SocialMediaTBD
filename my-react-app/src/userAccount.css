@@ -1,0 +1,38 @@
+/*Emma's CSS file for styling the story upload sidebar*/
+
+/*Upload Story title*/
+.storySection h2{
+    margin-top: 0;
+    color: #4f0000; 
+}
+
+/*Upload button styling*/
+.storySection button {
+    background-color:#4f0000;
+    color: pink; 
+    border-radius: 2px; 
+    border: none; 
+    padding: .75rem 1.3rem; 
+}
+
+/*Upload button hover effects*/ 
+.storySection button:hover{
+    background-color: lavender;
+    color: #4f0000; 
+}
+
+/*Choose File button*/
+/*No file chosen*/
+/*Chose File button hover effects*/ 
+
+/*Friendbar*/
+.friendbar h4{
+    color: #4f0000;
+    margin-top: .5rem; 
+}
+
+/*Main content*/
+.viewPosts h2{
+    color: #4f0000;
+    margin-top: 0; 
+}

@@ -46,23 +46,26 @@ function StoryUpload() {
             console.error('Upload Failed:', error);
         }
     };
-
     return (
-        <div className='uploadContainer'>
+       <div>
             <h2>Upload Story</h2>
-            <input type="file" accept="image/*,video/*" onChange={handleChange}/>          
+            <input type="file" accept="image/*,video/*" onChange={handleChange} />
             {preview && (
-                <div className="previewContainer">
-                    <p>Preview:</p>
-                    <img src={preview} alt="Preview" style={{maxWidth: '300px', maxHeight: '300px', marginBottom: '10px'}} />
-                </div>
+              <div className="previewContainer">
+                <p>Preview:</p>
+                <img
+                  src={preview}
+                  alt="Preview"
+                  style={{ maxWidth: '300px', maxHeight: '300px', marginBottom: '10px' }}
+                />
+              </div>
             )}
-            
             {file && <p>Select File: {file.name}</p>}
             <button onClick={handleUpload}>Upload</button>
             {progress > 0 && <p>Upload Progress: {progress}%</p>}
-        </div>
-    );
+            </div>
+      );
+      
 }
 
 export default StoryUpload;

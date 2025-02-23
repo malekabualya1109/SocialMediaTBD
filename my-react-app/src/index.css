@@ -1,37 +1,4 @@
-/*Emma's code on all the CSS styling!*/
-
-/*Body settings for html pages*/
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/*Dashboard layout, layout of html page four sections*/
-.dashboard{
-  display:grid;
-  grid-template-columns:1fr 3fr;
-  grid-template-rows:auto 1fr auto;
-  grid-template-areas: 
-  "header header"
-  "main main"
-  "footer footer";
-  gap:10px;
-  height:100vh;  
-  background-color: black;
-}
-
-/*Create basic design layout of dashboard items*/
-header,.sidebar,.main,.footer{
-  color:black;
-  text-align:center;
-  margin:0; 
-  font-size:1.2em;
-  box-sizing:border-box;
-}
+/*Emma's code on all the CSS styling! The index file mainly just contains edits to the login screen*/
 
 /*Set up of navigation bar when user has not logged in*/
 .navigation1{
@@ -42,7 +9,7 @@ header,.sidebar,.main,.footer{
   justify-content: center;
   padding:.3rem; 
   height:auto; 
-  background-color: #6a012b;
+  background-color: #4f0000;
 }
 
 /*Header "Tea Talks"*/
@@ -57,31 +24,16 @@ header,.sidebar,.main,.footer{
   margin: .8rem; 
 }
 
-/*Set up of the navigation bar when user has logged in*/
-.navigation{
-  grid-area:header; 
-  width:100%; 
-  justify-content:space-between;
-  align-items:center;
-  display:flex;
-  color:white; 
-  padding:.3rem;
-  margin:0; 
-  height:auto; 
-  background-color: #6a012b;
-}
-
 /*Header "Tea Talks"*/
-.navigation > h1 { 
+.header > h1 { 
   display: flex; 
   justify-content: center;
-  margin: 0;
-  margin-left: 1rem; 
   text-align: center;
-  color: pink; 
+  color: peachpuff;  
   font-family: 'Times New Roman', Times, serif;
   font-size: 2rem;
-  margin-bottom: 0; 
+  margin-bottom: .25rem; 
+  flex-direction: center; 
 }
 
 /*Navigation bar items (i.e. settings, user profile, etc)*/
@@ -93,6 +45,7 @@ ul li{
   font-size:1rem; 
   display:inline-block; 
   margin-right: 1rem;  
+  font-size: 1.25rem; 
 }
 
 /*Hover effect for navigation bar items*/
@@ -106,11 +59,6 @@ ul li > ul li{
   font-size: 1rem;
   text-align: left; 
   list-style-type: circle;
-}
-
-/*Story margin*/
-.storySection {
-  margin-bottom: 2rem;
 }
 
 /*Adjustments to the settings drop down menu*/
@@ -143,7 +91,7 @@ ul li > ul li{
 
 /*Login sizing*/
 .auth-container > h2{
-  color: #4f0000; 
+  color: #3b0000;  
   font-family: 'Times New Roman', Times, serif;
   font-size: 3.5rem; 
   margin-bottom: 1.2rem; 
@@ -154,13 +102,13 @@ ul li > ul li{
 .auth-container > p{
   font-size: 1.1rem; 
   font-weight: bold;
-  color: #4f0000; 
+  color: #3b0000; 
   margin-bottom: 2rem; 
 }
 
 /*Hyperlink for setting up account hover effect*/
 .auth-container > p:hover{
-  color: pink; /*Not currently working*/ 
+  color: pink;
 }
 
 /*Text field adjustments for entering login information*/
@@ -199,7 +147,3 @@ ul li > ul li{
   height: 35rem;  
   margin-left: 30rem; 
 }
-
-/*New page for settings!*/
-/*Adding friends*/
-/*Organizing content within the profile page itself*/
