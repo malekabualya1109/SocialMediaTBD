@@ -237,10 +237,9 @@ function App() {
                 <StoryUpload />
               </header>
               {/* Maria Added DailyForum below StoryUpload */}
-               <div className = "daily-forum-container">
-                 <DailyForum username={username} />
-                 </div>
-         
+              <div className = "daily-forum-container">
+                <DailyForum username={username} />
+              </div>
             </section>
 
             <section className="friendbar">
