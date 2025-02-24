@@ -9,7 +9,7 @@ CORS(post_bp)
 # Temporary in-memory storage for posts
 posts = []
 
-# API route to create a post
+# API route to create a post (MALEK)
 @post_bp.route('/api/posts', methods=['POST'])
 def create_post():
     data = request.json
