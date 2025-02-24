@@ -111,7 +111,7 @@ function DailyForum({ username }) {
           className="input-bar"
         />
         <button onClick={postComment} className="send-button">Send</button>
-        <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="emoji-button">Emoji</button>
+        <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="emoji-button">😄</button>
 
         {/* Emoji picker */}
         {showEmojiPicker && (
