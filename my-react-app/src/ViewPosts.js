@@ -3,14 +3,14 @@ import React, { useEffect, useState } from 'react';
 function ViewPosts() {
   const [posts, setPosts] = useState([]);
 
-  // ✅ Function to fetch posts from the API
+  //  Function to fetch posts from the API (MALEK)
   const fetchPosts = async () => {
     try {
       const response = await fetch('http://127.0.0.1:5000/api/posts');
       const data = await response.json();
 
-      console.log("📡 Received posts from API:", data); // Debugging API response
-      console.log("📡 Data type:", typeof data); // Check if it's an array
+      console.log("Received posts from API:", data); // Debugging API response
+      console.log("Data type:", typeof data); // Check if it's an array
 
       if (Array.isArray(data) && data.length > 0) {
         setPosts(data);  // Update state with posts

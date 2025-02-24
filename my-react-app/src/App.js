@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 import StoryUpload from './storyUpload';
-import ViewPosts from './ViewPosts'; // ✅ Added ViewPosts Component
+import ViewPosts from './ViewPosts';
 import './index.css'; 
 import './userAccount.css';
 
@@ -10,7 +10,7 @@ function App() {
   const [message, setMessage] = useState('');
   const [content, setContent] = useState('');
   const [postMessage, setPostMessage] = useState('');
-  const [posts, setPosts] = useState([]);  // ✅ Added posts state
+  const [posts, setPosts] = useState([]);  /
 
   // Fatimah: variables for users 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -299,13 +299,13 @@ function App() {
               <div>
                 <textarea
                   value={content}
-                  onChange={(e) => setContent(e.target.value)} // ✅ Ensure state updates
+                  onChange={(e) => setContent(e.target.value)} 
                   placeholder="Write your post..."
                 />
                 <button onClick={handlePost}>Post</button>
                 <p>{postMessage}</p>
               </div>
-              {/* ✅ View Posts (FR2) */}
+              {/* View Posts (FR2) (Malek) */}
 
 
         {/* This interest prompt only shows if someone signs up */}
