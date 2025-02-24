@@ -48,19 +48,22 @@ function StoryUpload() {
             console.error('Upload Failed:', error); //upload fails
         }
     };
-
     return (
-        <div className='uploadContainer'>
+       <div>
             <h2>Upload Story</h2>
             {/* file input field allowing selection of images and videos - still have not tested for videos */}
             <input type="file" accept="image/*,video/*" onChange={handleChange}/>
             
             {/* display preview only if an image is selected */}
             {preview && (
-                <div className="previewContainer">
-                    <p>Preview:</p>
-                    <img src={preview} alt="Preview" style={{maxWidth: '300px', maxHeight: '300px', marginBottom: '10px'}} />
-                </div>
+              <div className="previewContainer">
+                <p>Preview:</p>
+                <img
+                  src={preview}
+                  alt="Preview"
+                  style={{ maxWidth: '300px', maxHeight: '300px', marginBottom: '10px' }}
+                />
+              </div>
             )}
             
             {/* display the selected filename if a file is chosen */}
@@ -69,8 +72,9 @@ function StoryUpload() {
             <button onClick={handleUpload}>Upload</button>
             {/* display upload progress percentage if greater than 0 */}
             {progress > 0 && <p>Upload Progress: {progress}%</p>}
-        </div>
-    );
+            </div>
+      );
+      
 }
 
 export default StoryUpload;

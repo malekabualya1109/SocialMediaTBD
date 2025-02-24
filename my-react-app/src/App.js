@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import StoryUpload from './storyUpload';
 import ViewPosts from './ViewPosts'; // ✅ Added ViewPosts Component
+import './index.css'; 
+import './userAccount.css';
+
 
 function App() {
   const [message, setMessage] = useState('');
@@ -22,6 +25,10 @@ function App() {
 
   // Fatimah: Pick Interests popup
   const [showInterestsPrompt, setShowInterestsPrompt] = useState(false);
+
+
+  //Fatimah:user id for the interest
+  const[userId, setUserId] = useState(false);
 
 
   // Fatimah: Hard-coded available interests for now
@@ -45,20 +52,19 @@ function App() {
     });
   };
 
-
-  // ✅ Fetch posts from backend (FR2)
+  // Fetch posts from backend (FR2) (MALEK)
   const fetchPosts = async () => {
     try {
       const response = await fetch('http://127.0.0.1:5000/api/posts');
       const data = await response.json();
       setPosts(data);
     } catch (error) {
-      console.error("❌ Error fetching posts:", error);
+      console.error("Error fetching posts:", error);
     }
   };
 
   useEffect(() => {
-    fetchPosts();  // ✅ Fetch posts when the app loads
+    fetchPosts();  // Fetch posts when the app loads
   }, []);
 
   useEffect(() => {
@@ -71,10 +77,10 @@ function App() {
 
   // Function to handle post submission (MALEK)
   const handlePost = async () => {
-    console.log("✅ Post button clicked");
+    console.log("Post button clicked");
   
     if (!content.trim()) {
-      console.error("❌ Cannot post an empty message");
+      console.error("Cannot post an empty message");
       return;
     }
   
@@ -96,17 +102,17 @@ function App() {
   
       const data = await response.json();
       if (response.status === 201) {
-        console.log("✅ Post successful:", data);
-        setContent("");  // ✅ Clear input box
+        console.log("Post successful:", data);
+        setContent("");  // Clear input box
   
-        // ✅ Immediately update the posts list **without needing a refresh**
+        // Immediately update the posts list **without needing a refresh**
         setPosts((prevPosts) => [data.post, ...prevPosts]);
   
       } else {
-        console.error("❌ Post failed:", data);
+        console.error("Post failed:", data);
       }
     } catch (error) {
-      console.error("❌ Failed to connect to backend:", error);
+      console.error("Failed to connect to backend:", error);
     }
   };
   
@@ -146,6 +152,9 @@ function App() {
 
       if (response.ok) {
         setIsAuthenticated(true);
+        //when you sign up, the user id becomes the user id of the one who just signed up
+        setUserId(data.user_id);
+
         setAuthMessage('You signed up successfully. Welcome to Tea Talks!');
         setShowInterestsPrompt(true);
       } else {
@@ -164,6 +173,7 @@ function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          user_id: userId, // the user id cause why not
           interests: selectedInterests,
         }),
       });
@@ -192,125 +202,139 @@ function App() {
 
   return (
 
-    /*Emma: Navigation Bar/Page Layout*/
-    <div className="App">
-      {!isAuthenticated && (
+      <div className="App">
+        
+    {!isAuthenticated && (
       <header className="navigation1">
         <h1>Welcome to Tea Talks</h1>
       </header>
-      )} 
+    )}
+    
         {isAuthenticated && (
-          <header className="navigation">
-        <h1>Tea Talks</h1>
-        <ul>
-          <li>Notifications</li>
-          <li>User Profile</li>
-          <li>
-            <div className = "setting" onClick={toggleDropdown}>
-              Settings
-                {isDropdownVisible && (
-                <ul className = "setting-menu">
-                  <li>Change Password</li>
-                  <li>Update Username</li>
-                </ul>
-                )} 
-              </div>
-          </li>
-        </ul> 
-        </header>
-      )} 
+          <>
+            <header className="header">
+              <h1>Tea Talks</h1>
+              <ul>
+                <li>Notifications</li>
+                <li>User Profile</li>
+                <li>
+                  <div className="setting" onClick={toggleDropdown}>
+                    Settings
+                    {isDropdownVisible && (
+                      <ul className="setting-menu">
+                        <li>Change Password</li>
+                        <li>Update Username</li>
+                      </ul>
+                    )}
+                  </div>
+                </li>
+              </ul>
+            </header>
 
+            <section className="sidebar">
+              <header className="storySection">
+                <StoryUpload />
+              </header>
+            </section>
 
-      {/* Display the fetched message from Flask */}
-    {/*  <p>{message || 'Backend data stuff'}</p>*/}
+            <section className="friendbar">
+              <h4>Friends List</h4>
+            </section>
 
-      {/* Login and sign-up button */}
-      {!isAuthenticated && (
-        <div className="auth-container">
-          <h2>{newUser ? 'Sign Up' : 'Login'}</h2>
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <br />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <br />
-          <button onClick={newUser ? handleSignUp : handleLogin}>
-            {newUser ? 'Sign Up' : 'Login'}
-          </button>
-          <p>{authMessage}</p>
-          <p
-            style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}
-            onClick={() => {
-              // Toggle between login and sign-up modes
-              setNewUser(!newUser);
-              setAuthMessage('');
-            }}
-          >
-            {newUser ? 'Already have an account? Login' : 'New user? Sign Up'}
-          </p>
-        </div>
-      )}
-
-      {/* This shows only if someone is logged in */}
-      {isAuthenticated && (
-        <>
-          <header className="storySection">
-            <StoryUpload />
-          </header>
-          <div>
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}  // ✅ Ensure state updates
-              placeholder="Write your post..."
+            <footer className="footer">
+              <p>Copyright of WSU Computer Science Students</p>
+            </footer>
+          </>
+        )}
+    
+        {/* Display the fetched message from Flask */}
+        {/* <p>{message || 'Backend data stuff'}</p> */}
+    
+        {/* Login and sign-up button */}
+        {!isAuthenticated && (
+          <div className="auth-container">
+            {/* Emma added this bit in here with the mug icon */}
+            <div className="mugIcon">
+              <i className="fa-solid fa-mug-hot"></i>
+            </div>
+            <h2>{newUser ? 'Sign Up' : 'Login'}</h2>
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
-            <button onClick={handlePost}>Post</button>
-            <p>{postMessage}</p>
-          </div>
-
-          {/* ✅ View Posts (FR2) */}
-          <ViewPosts posts={posts} setPosts={setPosts} />
-        </>
-      )}
-
-     
-
-      {/* This interest prompt only shows only if someone signs up */}
-
-      {showInterestsPrompt && (
-        <div className="interest-modal">
-          <div className="interest-modal-content">
-
-            <h3>Pick your interests</h3>
-            {availableInterests.map((intObj) => (
-              <label key={intObj.id} style={{ display: 'block' }}>
-                <input
-                  type="checkbox"
-                  checked={selectedInterests.includes(intObj.id)}
-                  onChange={() => handleInterestChange(intObj.id)}
-                />
-                {intObj.label}
-              </label>
-            ))}
-
-            <button onClick={handleSaveInterests} style={{ marginTop: '10px' }}>
-              Save Interests
+            <br />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <br />
+            <button onClick={newUser ? handleSignUp : handleLogin}>
+              {newUser ? 'Sign Up' : 'Login'}
             </button>
+            <p>{authMessage}</p>
+            <p
+              onClick={() => {
+                // Toggle between login and sign-up modes
+                setNewUser(!newUser);
+                setAuthMessage('');
+              }}
+            >
+              {newUser ? 'Already have an account? Login' : 'New user? Sign Up'}
+            </p>
           </div>
-        </div>
-      )}
-      
-  
+        )}
+    
+        {/* This shows only if someone is logged in */}
+        {isAuthenticated && (
+          <div className="content-wrapper">
+    
+            <section className="main">
+            <div className = "viewPosts">
+                <ViewPosts posts={posts} setPosts={setPosts} />
+              </div> 
+              <div>
+                <textarea
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)} // ✅ Ensure state updates
+                  placeholder="Write your post..."
+                />
+                <button onClick={handlePost}>Post</button>
+                <p>{postMessage}</p>
+              </div>
+              {/* ✅ View Posts (FR2) */}
 
-    </div>
-  );
+
+        {/* This interest prompt only shows if someone signs up */}
+        {showInterestsPrompt && (
+          <div className="interest-modal">
+            <div className="interest-modal-content">
+              <h3>Pick your interests</h3>
+              {availableInterests.map((intObj) => (
+                <label key={intObj.id} style={{ display: 'block' }}>
+                  <input
+                    type="checkbox"
+                    checked={selectedInterests.includes(intObj.id)}
+                    onChange={() => handleInterestChange(intObj.id)}
+                  />
+                  {intObj.label}
+                </label>
+              ))}
+              <button onClick={handleSaveInterests} style={{ marginTop: '10px' }}>
+                Save Interests
+              </button>
+            </div>
+          </div>
+        )}
+
+            </section>
+          </div>
+        )}
+      </div>    
+    );   
 }
 
 export default App;
