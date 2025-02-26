@@ -11,7 +11,7 @@ function App() {
   const [message, setMessage] = useState('');
   const [content, setContent] = useState('');
   const [postMessage, setPostMessage] = useState('');
-  const [posts, setPosts] = useState([]);  /
+  const [posts, setPosts] = useState([]);  
 
   // Fatimah: variables for users 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
