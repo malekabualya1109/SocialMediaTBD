@@ -10,7 +10,7 @@ function App() {
   const [message, setMessage] = useState('');
   const [content, setContent] = useState('');
   const [postMessage, setPostMessage] = useState('');
-  const [posts, setPosts] = useState([]);  /
+  const [posts, setPosts] = useState([]);  
 
   // Fatimah: variables for users 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -85,7 +85,7 @@ function App() {
     }
   
     try {
-      console.log("📡 Sending request to backend...");
+      console.log("Sending request to backend...");
   
       const response = await fetch('http://127.0.0.1:5000/api/posts', { 
         method: 'POST',
@@ -98,7 +98,7 @@ function App() {
         }),
       });
   
-      console.log("📡 API request sent!");
+      console.log("API request sent!");
   
       const data = await response.json();
       if (response.status === 201) {
