@@ -4,6 +4,7 @@ import StoryUpload from './storyUpload';
 import ViewPosts from './ViewPosts';
 import './index.css'; 
 import './userAccount.css';
+import DailyForum from './dailyForum';
 
 
 function App() {
@@ -235,6 +236,10 @@ function App() {
               <header className="storySection">
                 <StoryUpload />
               </header>
+              {/* Maria Added DailyForum below StoryUpload */}
+              <div className = "daily-forum-container">
+                <DailyForum username={username} />
+              </div>
             </section>
 
             <section className="friendbar">
