@@ -31,6 +31,37 @@ def home():
     return "Backend message sending to front end"
 
 
+def create_default_admin():
+    try:
+        # Connect to MySQL without specifying a database
+        conn = pymysql.connect(host='localhost', user='tea', password='')
+        cursor = conn.cursor()
+        # Ensure the database exists and select it
+        cursor.execute("CREATE DATABASE IF NOT EXISTS userdata")
+        cursor.execute("USE userdata")
+        # Ensure the table exists. (You can optionally add an "is_admin" column if needed.)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS data (
+                id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+                username VARCHAR(100) UNIQUE,
+                password VARCHAR(20)
+            )
+        """)
+        # Check if the default admin user exists
+        cursor.execute("SELECT * FROM data WHERE username = %s", ("admin",))
+        if cursor.fetchone() is None:
+            # Insert the default admin user. (Replace 'adminpassword' with a secure password.)
+            cursor.execute("INSERT INTO data (username, password) VALUES (%s, %s)", ("admin", "adminpassword"))
+            conn.commit()
+            print("Default admin user created.")
+        else:
+            print("Default admin user already exists.")
+        conn.close()
+    except Exception as e:
+        print("Error creating default admin user:", e)
+
+
+
 @app.route('/api/signup', methods=['POST'])
 
 
@@ -189,5 +220,6 @@ def set_interests():
     
 
 if __name__ == '__main__':
+    create_default_admin()
     app.run(debug=True)
 
