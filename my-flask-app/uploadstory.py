@@ -1,9 +1,11 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, send_from_directory
 from datetime import datetime, timedelta
 import os
 
 # create flask blueprint to handle story uploads
 uploadstory_bp = Blueprint('uploadstory', __name__)
+
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads').replace("\\","/")
 
 @uploadstory_bp.route('/api/uploadStory', methods=['POST'])
 def upload_story():
@@ -16,6 +18,9 @@ def upload_story():
     # check if a file was actually selected
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
+
+    print("recieved file:", file.filename)
+    print("file type:", file.content_type)
 
     # generate a unique filename using current timestamp
     filename = datetime.now().strftime("%Y%m%d%H%M%S") + "_" + file.filename
@@ -42,3 +47,14 @@ def upload_story():
         "message": "File uploaded successfully",
         "metadata": metadata
     }), 200
+
+# Serve uploaded files
+@uploadstory_bp.route('/uploads/<filename>')
+def uploaded_file(filename):
+    try:
+        print(f"Serving file: {filename}")
+        return send_from_directory(UPLOAD_FOLDER, filename)
+    except Exception as e:
+        print(f"error serving file: {e}")
+        return jsonify({"error": "failed to retrieve the file"}), 500
+
