@@ -31,35 +31,39 @@ def home():
     return "Backend message sending to front end"
 
 
-def create_default_admin():
-    try:
-        # Connect to MySQL without specifying a database
-        conn = pymysql.connect(host='localhost', user='tea', password='')
-        cursor = conn.cursor()
-        # Ensure the database exists and select it
-        cursor.execute("CREATE DATABASE IF NOT EXISTS userdata")
-        cursor.execute("USE userdata")
-        # Ensure the table exists. (You can optionally add an "is_admin" column if needed.)
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS data (
-                id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
-                username VARCHAR(100) UNIQUE,
-                password VARCHAR(20)
-            )
-        """)
-        # Check if the default admin user exists
-        cursor.execute("SELECT * FROM data WHERE username = %s", ("admin",))
-        if cursor.fetchone() is None:
-            # Insert the default admin user. (Replace 'adminpassword' with a secure password.)
-            cursor.execute("INSERT INTO data (username, password) VALUES (%s, %s)", ("admin", "adminpassword"))
-            conn.commit()
-            print("Default admin user created.")
-        else:
-            print("Default admin user already exists.")
-        conn.close()
-    except Exception as e:
-        print("Error creating default admin user:", e)
+"""
 
+"don't know if this works yet, but i'm trying to see if i can have a user with all priveleges so that it can connect the SQL database to other computers"
+"""
+
+def admin():
+
+    try:
+        # connecting  to MySQL without specifying a database
+
+        connection = pymysql.connect(host='localhost', user='tea', password='')
+        cursor = connection.cursor()
+
+        # checking  if the admin user exists in the MySQL system database
+        check_query = "SELECT COUNT(*) FROM mysql.user WHERE user = %s"
+
+        cursor.execute(check_query, ("admin",))
+        result = cursor.fetchone()
+
+        if result and result[0] > 0:
+            print("Admin user already exists. Skipping creation.")
+        
+        else:
+            # creating the admin user and grant all privileges
+            cursor.execute("CREATE USER 'admin'@'%' IDENTIFIED BY 'admin_password';")
+            cursor.execute("GRANT ALL PRIVILEGES ON *.* TO 'admin'@'%' WITH GRANT OPTION;")
+            connection.commit()
+
+            print("Admin user created successfully with all privileges.")
+
+        connection.close()
+    except Exception as e:
+        print("Error creating admin user:", e)
 
 
 @app.route('/api/signup', methods=['POST'])
@@ -220,6 +224,6 @@ def set_interests():
     
 
 if __name__ == '__main__':
-    create_default_admin()
+    admin()
     app.run(debug=True)
 
