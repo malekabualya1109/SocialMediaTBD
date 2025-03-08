@@ -5,6 +5,7 @@ import ViewPosts from './ViewPosts';
 import './index.css'; 
 import './userAccount.css';
 import DailyForum from './dailyForum';
+import './smallerPage.css';
 
 
 function App() {
@@ -302,12 +303,12 @@ function App() {
                 <ViewPosts posts={posts} setPosts={setPosts} />
               </div> 
               <div>
-                <textarea
+                <textarea class="postArea"
                   value={content}
                   onChange={(e) => setContent(e.target.value)} 
                   placeholder="Write your post..."
                 />
-                <button onClick={handlePost}>Post</button>
+                <button class="postButton" onClick={handlePost}>Post</button>
                 <p>{postMessage}</p>
               </div>
               {/* View Posts (FR2) (Malek) */}

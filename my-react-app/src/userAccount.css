@@ -1,9 +1,58 @@
-/*Emma's CSS file for styling the story upload sidebar*/
+/*Emma's CSS file for styling the story upload sidebar and post section userAccount.css*/
 
-/*Upload Story title*/
+/*Upload Story title "Upload Story"*/
 .storySection h2{
     margin-top: 0;
     color: #4f0000; 
+    font-size: 1.8rem; 
+}
+
+/*Recent Post Section title "Recent Posts*/
+.viewPosts h2{
+    color: #4f0000;
+    margin-top: 0; 
+    font-size: 1.8rem;
+}
+
+/*Friendbar Title "Friendlist*/
+.friendbar h4{
+    color: #4f0000;
+    margin-top: .5rem; 
+    font-size: 1.6rem;
+}
+
+/*Size of the post box!*/
+.postArea {
+    display: flex; 
+    padding: 11rem; 
+    font-size: 1rem; 
+    border: none; 
+    border-radius: 3%; 
+}
+
+/*Button that says "post" */
+.postButton {
+    color: pink;
+    background-color: #4f0000;
+    margin-top: 1rem;
+    height: 3rem; 
+    width: 5rem;
+    border-radius: 5%; 
+    border: none; 
+}
+
+/*Post Button hover effects*/
+.postButton:hover {
+    background-color: lavender;
+    color: black;
+}
+
+/*Currently not working...lol-Emma*/
+/*Location of "Write your post..." and some designs!*/
+.postArea::placeholder{
+    margin-top: 0rem;
+    display: flex;
+    justify-content: center; 
 }
 
 /*Upload button styling*/
@@ -46,7 +95,6 @@
     transition: stroke-dashoffset 0.5s ease;
 }
 
-
 /* Styling for each story circle (thumbnail) */
 .storyCircle {
     width: 100px;
@@ -78,21 +126,4 @@
     margin-bottom: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
-}
-
-
-/*Choose File button*/
-/*No file chosen*/
-/*Chose File button hover effects*/ 
-
-/*Friendbar*/
-.friendbar h4{
-    color: #4f0000;
-    margin-top: .5rem; 
-}
-
-/*Main content*/
-.viewPosts h2{
-    color: #4f0000;
-    margin-top: 0; 
 }
