@@ -1,0 +1,22 @@
+/*Emma's file to update the shrinking size of the app oooooasfasdfasdf*/
+/*Smaller page for updating*/
+@media(max-width: 950px){
+    /*Dashboard layout, layout of html page four sections*/
+    .App{
+        display:grid;
+        grid-template-columns:1fr 3fr .5fr;
+        grid-template-rows:auto 1fr auto;
+        grid-template-areas: 
+        "header header"
+        "sidebar friendbar"
+        "main main"
+        "footer footer";
+        gap:15px;
+        height:100vh;  
+        text-align: center;
+        background-color: #6a012b; 
+        margin: 0; 
+        width: 100%; 
+  }
+    
+}
