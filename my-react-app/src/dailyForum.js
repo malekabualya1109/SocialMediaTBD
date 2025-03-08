@@ -11,6 +11,8 @@ function DailyForum({ username }) {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [replyText, setReplyText] = useState ("");
 
   // Load comments from the server
   const loadComments = async () => {
@@ -72,6 +74,25 @@ function DailyForum({ username }) {
     }
   };
 
+  const replyComment = async (timestamp, replyText) => {
+    if (!replyText.trim()) return;//Prevent empty replies
+
+    try {
+      const response = await axios.post("http://localhost:8080/comments/reply", {
+        timestamp,
+        text: replyText,
+        username,
+      });
+
+      setReplyingTo(null);
+      setReplyText("");
+      loadComments ();//
+    } catch ({response, message}) {
+      console.error("Error replying to comment", response?.data || message);
+
+    }
+  };
+
   // Add an emoji to the comment and close the emoji picker
   const hideEmojiSet = (emoji) => {
     setComment(comment + emoji.native);
@@ -93,6 +114,33 @@ function DailyForum({ username }) {
               </p>
               <p>{cmt.text}</p>
               <button onClick={() => likeComment(cmt.timestamp)}>Like {cmt.likes}</button>
+              <button onClick={() => setReplyingTo(cmt.timestamp)}>Reply</button>
+
+              {/* Reply Input (only visible for the selected comment) */}
+              {replyingTo === cmt.timestamp && (
+                <div className="reply-input">
+                <input
+                  type="text"
+                  value={replyText}
+                  onChange={(e) => setReplyText(e.target.value)}
+                  placeholder="Type your reply..."
+                />
+                <button onClick={() => replyComment(cmt.timestamp, replyText)}>
+                  Send Reply
+                </button>
+              </div>
+            )}
+            {/* Display Replies (if available) */}
+            {cmt.replies && cmt.replies.length > 0 && (
+                <div className="replies">
+                  {cmt.replies.map((reply, idx) => (
+                    <div key={idx} className="reply-box">
+                      <p><strong>{reply.username}</strong> - {format(reply.timestamp)}</p>
+                      <p>{reply.text}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))
         ) : (
