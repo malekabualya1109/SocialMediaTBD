@@ -5,6 +5,12 @@ import pymysql
 from loginandsignup import app 
 
 
+
+# ---------------------------------------------------
+# This is a test file for loginandsignup.py
+# ---------------------------------------------------
+
+
 class SnL_Test(unittest.TestCase):
 
     #my testers constant that I will use accross my tests
@@ -16,7 +22,7 @@ class SnL_Test(unittest.TestCase):
 
     def setUp(self):
 
-        """setting up test client and cleaning the database before each test"""
+        #setting up test client and cleaning the database before each test
 
         self.client = app.test_client()
         self.client.testing = True
