@@ -5,10 +5,9 @@ import pymysql
 from loginandsignup import app 
 
 
-
 class SnL_Test(unittest.TestCase):
 
-    #my testers
+    #my testers constant that I will use accross my tests
 
     TEST_USERNAME = "testuser"
     TEST_PASSWORD = "testpass"
@@ -98,16 +97,28 @@ class SnL_Test(unittest.TestCase):
     
 
 
-
-
     # --------------------------------------
     # WHITE BOX TESTS
     # --------------------------------------
 
 
+    # This test here is veryfying both the statement and branch coverage for each endpoint functions
+
+
     def test_sExistence(self):
 
-        """Testing sign-up fails if the username already exists"""
+        """Testing sign-up fails if the username already exists
+        This is both a statement and branch coverage 
+        Function under test :
+           def signup():
+                if username == "" or password == "":
+                    return error("Username or password cannot be empty")
+                if user_exists(username):
+                    return error("Username already exist")
+                # User creation logic
+
+        """
+
 
         # First signup attempt (should succeed)
         response1 = self.client.post('/api/signup', json={ 'username': self.TEST_USERNAME,'password': self.TEST_PASSWORD})
@@ -127,7 +138,18 @@ class SnL_Test(unittest.TestCase):
 
     def test_lValid(self):
         
-        """Testing a valid login after sign-up"""
+        """Testing a valid login after sign-up
+
+
+        This is a statement coverage 
+        Function under test :
+          def login():
+                if not verify_user(username, password):
+                    return error("Invalid credentials")
+                return success("Login successful!")
+
+
+        """
 
         # First, signup
         signup_response = self.client.post('/api/signup', json={ 'username': self.TEST_USERNAME, 'password': self.TEST_PASSWORD })
@@ -146,7 +168,17 @@ class SnL_Test(unittest.TestCase):
 
     def test_lInvalid(self):
 
-        """Testing login fails with incorrect credentials"""
+        """Testing login fails with incorrect credentials
+            
+        This is a branch coverage
+        Function under test :
+            def login():
+                if not verify_user(username, password):
+                    return error("Invalid credentials")
+                
+        """
+
+       
         
         login_response = self.client.post('/api/login', json={'username': 'wronguser', 'password': 'wrongpass' })
         self.assertEqual(login_response.status_code, 401)
@@ -158,7 +190,18 @@ class SnL_Test(unittest.TestCase):
 
     def test_interests(self):
 
-        """Testing that user interests are saved correctly"""
+        """Testing that user interests are saved correctly
+
+        This is a statement coverage
+
+         Function under test :
+            def set_interests():
+                if not valid_user(user_id):
+                    return error("User not found")
+                save_interests(user_id, interests)
+                return success("Interests saved successfully")
+        """
+
         
         # signing up first
         signup_response = self.client.post('/api/signup', json={ 'username': self.TEST_USERNAME, 'password': self.TEST_PASSWORD})
@@ -178,6 +221,8 @@ class SnL_Test(unittest.TestCase):
     # --------------------------------------
     # INTEGRATION TESTS
     # --------------------------------------
+
+    # I am testing if multiples API work together correctly, in here I am testing for sign up and login, and then sign up and interests
  
     def test_sigLog(self):
      
@@ -219,7 +264,7 @@ if __name__ == '__main__':
 
     suite = unittest.TestSuite()
 
-    # Add test cases in the order they appear in the class
+    # adding test cases in the order they appear in the class
     suite.addTest(SnL_Test("test_home"))
     suite.addTest(SnL_Test("test_sEmpty"))
     suite.addTest(SnL_Test("test_sValid"))
