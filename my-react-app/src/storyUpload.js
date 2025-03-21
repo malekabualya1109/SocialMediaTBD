@@ -8,16 +8,25 @@ function StoryUpload() {
     const [progress, setProgress] = useState(0);   /* state to keep track of upload progress percentage */
     const [uploadedStories, setUploadedStories] = useState([]);  /* state to store list of story images */
 
+
     /* function to handle file selection from input field */
     const handleChange = (e) => {
         const selectedFile = e.target.files[0]; // get the first selected file
         setFile(selectedFile); // save selected file in state
         console.log('selected file:', selectedFile);
-        /* check if the selected file is an image and create a preview URL */
-        if(selectedFile && selectedFile.type.startsWith('image/')) {
-            setPreview(URL.createObjectURL(selectedFile)); // Generate preview URL
+        // Check if the selected file is an image or a video and create a preview URL
+        if (selectedFile && selectedFile.type.startsWith('image/')) {
+            setPreview({
+                type: 'image',
+                url: URL.createObjectURL(selectedFile)
+            });
+        } else if (selectedFile && selectedFile.type.startsWith('video/')) {
+            setPreview({
+                type: 'video',
+                url: URL.createObjectURL(selectedFile)
+            });
         } else {
-            setPreview(null);  //reset preview if file is not an image
+            setPreview(null);
         }
     };
 
@@ -59,11 +68,24 @@ function StoryUpload() {
 
             <input type="file" accept="image/*,video/*" onChange={handleChange} />
 
-            {preview && (
-                <div className="previewContainer">
+            {preview && preview.type === 'video' && (
+                <div className="previewContainer" style={{ width: '100%', maxHeight: '500px', maxWidth: '500px' }}>
                     <p>Preview:</p>
-                    <img src={preview} alt="Preview" style={{ maxWidth: '50px', maxHeight: '50px', marginBottom: '1px' }} />
+                    <video width="100%" controls autoPlay>
+                        <source src={preview.url} type={file && file.type} />
+                        {/* Log the URL and file type for debugging */}
+                        {console.log('Video Preview URL:', preview.url)}
+                        {console.log('Video Type:', file && file.type)}
+                        Your browser does not support the video tag.
+                    </video>
                 </div>
+            )}
+
+            {preview && preview.type === 'image' && (
+                    <div className="previewContainer">
+                        <p>Preview:</p>
+                            <img src={preview.url} alt="Preview" style={{ maxWidth: '50px', maxHeight: '50px', marginBottom: '1px' }} />
+                    </div>
             )}
 
             {file && <p>Selected File: {file.name}</p>}
@@ -76,6 +98,7 @@ function StoryUpload() {
                     <p style={{ textAlign: 'center', fontWeight: 'bold' }}>{progress}%</p>
                 </div>
             )}
+            
 
             <div className="storyContainer">
                 {uploadedStories.length > 0 && (
