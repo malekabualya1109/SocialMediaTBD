@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, send_from_directory
 from datetime import datetime, timedelta
 import os
+import mimetypes
 
 # create flask blueprint to handle story uploads
 uploadstory_bp = Blueprint('uploadstory', __name__)
@@ -10,7 +11,7 @@ UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads').replace("\\","/")
 @uploadstory_bp.route('/api/uploadStory', methods=['POST'])
 def upload_story():
     try:
-        allowedExt={'jpg', 'jpeg', 'png', 'gif'}
+        allowedExt={'jpg', 'jpeg', 'png', 'gif', 'mp4', 'mov', 'avi', 'mkv'}
 
         def allowed(filename):
             return '.' in filename and filename.rsplit('.', 1)[1].lower() in allowedExt
@@ -66,9 +67,15 @@ def upload_story():
 @uploadstory_bp.route('/uploads/<filename>')
 def uploaded_file(filename):
     try:
-        print(f"Serving file: {filename}")
-        return send_from_directory(UPLOAD_FOLDER, filename)
-    except Exception as e:
-        print(f"error serving file: {e}")
-        return jsonify({"error": "failed to retrieve the file"}), 404
+        # Determine the correct MIME type for the file
+        mime_type, _ = mimetypes.guess_type(filename)
+        if not mime_type:
+            mime_type = 'application/octet-stream'  # default MIME type if unknown
 
+        print(f"Serving file: {filename}, MIME type: {mime_type}")
+
+        # Serve the file with the correct MIME type
+        return send_from_directory(UPLOAD_FOLDER, filename, mimetype=mime_type)
+    except Exception as e:
+        print(f"Error serving file: {e}")
+        return jsonify({"error": "Failed to retrieve the file"}), 404
