@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import './App.css';
 import StoryUpload from './storyUpload';
 import ViewPosts from './ViewPosts';
@@ -6,9 +6,18 @@ import './index.css';
 import './userAccount.css';
 import DailyForum from './dailyForum';
 import './smallerPage.css';
-
+import './user-profile.css';
+import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
 function App() {
+  const UserProfile = () => {
+    return (
+      <div>
+        <h1>User Profile</h1>
+        <p>Welcome to your profile page!</p>
+      </div>
+    );
+  };
   const [message, setMessage] = useState('');
   const [content, setContent] = useState('');
   const [postMessage, setPostMessage] = useState('');
@@ -203,8 +212,8 @@ function App() {
 
 
   return (
-
-      <div className="App">
+    <Router>
+    <div className="App"> 
         
     {!isAuthenticated && (
       <header className="navigation1">
@@ -218,7 +227,7 @@ function App() {
               <h1>Tea Talks</h1>
               <ul>
                 <li>Notifications</li>
-                <li>User Profile</li>
+                <li><a href="/user-profile.html">User Profile</a></li>
                 <li>
                   <div className="setting" onClick={toggleDropdown}>
                     Settings
@@ -232,7 +241,11 @@ function App() {
                 </li>
               </ul>
             </header>
-
+            
+                    
+        <Routes>
+          <Route path="/profile" element={<UserProfile />} />
+        </Routes>
             <section className="sidebar">
               <header className="storySection">
                 <StoryUpload />
@@ -339,7 +352,8 @@ function App() {
             </section>
           </div>
         )}
-      </div>    
+      </div> 
+      </Router>
     );   
 }
 
