@@ -9,7 +9,10 @@ from tkinter import * #this is for the message box
 import pymysql
 
 app = Flask(__name__)
-CORS(app)  # This will allow requests from any origin
+
+#not permanent, i am trying something
+app.secret_key = 'mykey'
+CORS(app, supports_credentials=True)  # This will allow requests from any origin
 
 # this is to set up uploaded folder
 UPLOAD_FOLDER = './uploads'
@@ -66,7 +69,6 @@ def admin():
         print("Error creating admin user:", e)
 
 
-@app.route('/api/signup', methods=['POST'])
 
 
 #note for my self: the numbers are htttp status codes that returns with json if a request is successful or not
@@ -192,6 +194,8 @@ def login():
 # the interst part and i'm not done with it yet because i didn't completely store this in the databse
 
 @app.route('/api/set_interests', methods=['POST'])
+
+#test the route , with postmen
 def set_interests():
 
     #first error, i was not creating the databse earlier, solved it yayyyys
@@ -218,12 +222,26 @@ def set_interests():
 
         return jsonify({"message": "Interests saved successfully"}), 200
 
+        #check messages
+
 
     except:
         return jsonify({"error": "Could not connect to database"}), 500
     
 
+#i want to check if the page can stay logged in when i reload the page, but i dont know how to approach it yet, so this is a start
+
+@app.route('/api/check_session', methods=['GET'])
+def check_session():
+    if 'user_id' in session:
+        return jsonify({"logged_in": True, "user_id": session['user_id'], "username": session.get('username')})
+    return jsonify({"logged_in": False})
+
 if __name__ == '__main__':
     admin()
     app.run(debug=True)
 
+
+
+#for testing make api calls , i'm sending messages in between, make calls to my websites
+# good input and bad input, as a unit test, i can put my errors as unit test
