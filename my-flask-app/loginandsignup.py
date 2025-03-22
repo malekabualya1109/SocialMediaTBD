@@ -4,6 +4,7 @@ import os
 from postcreation import post_bp
 from uploadstory import uploadstory_bp
 from tkinter import * #this is for the message box
+import getpass  # Maria's changes: used for password prompt
 
 #the python sql libra
 import pymysql
@@ -13,6 +14,9 @@ app = Flask(__name__)
 #not permanent, i am trying something
 app.secret_key = 'mykey'
 CORS(app, supports_credentials=True)  # This will allow requests from any origin
+
+# Maria's changes: Prompt for MySQL password
+mysql_password = getpass.getpass("Enter your MySQL root password: ")
 
 # this is to set up uploaded folder
 UPLOAD_FOLDER = './uploads'
@@ -44,7 +48,8 @@ def admin():
     try:
         # connecting  to MySQL without specifying a database
 
-        connection = pymysql.connect(host='localhost', user='tea', password='')
+        # Maria's changes: using prompted MySQL password
+        connection = pymysql.connect(host='localhost', user='root', password=mysql_password)
         cursor = connection.cursor()
 
         # checking  if the admin user exists in the MySQL system database
@@ -96,8 +101,8 @@ def signup():
 
     try:
 
-        # connection to dbms
-        theSQL= pymysql.connect(host='localhost', user='tea', password='')
+        # Maria's changes: using prompted MySQL password
+        theSQL = pymysql.connect(host='localhost', user='root', password=mysql_password)
 
             #store password in the a
             # third party autentificati
@@ -161,8 +166,8 @@ def login():
         return jsonify({"error": "Username or password cannot be empty"}), 400
 
     try:
-        # Connect to the existing 'userdata' database
-        theSQL= pymysql.connect(host='localhost', user='tea', password='', database='userdata' )
+        # Maria's changes: using prompted MySQL password
+        theSQL = pymysql.connect(host='localhost', user='root', password=mysql_password, database='userdata')
         mycursor = theSQL.cursor()
 
         #store password in a json file
@@ -206,7 +211,8 @@ def set_interests():
 
     #table creation and stuff
     try:
-        theSQL = pymysql.connect(host='localhost', user='tea', password='', database='userdata')
+        # Maria's changes: using prompted MySQL password
+        theSQL = pymysql.connect(host='localhost', user='root', password=mysql_password, database='userdata')
         mycursor = theSQL.cursor()
         query='create table if not exists user_interests(id int auto_increment primary key, user_id int not null, interest_id int not null)'
 
@@ -240,8 +246,3 @@ def check_session():
 if __name__ == '__main__':
     admin()
     app.run(debug=True)
-
-
-
-
-
