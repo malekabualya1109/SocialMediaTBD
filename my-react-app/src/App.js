@@ -204,7 +204,7 @@ function App() {
 
   return (
 
-      <div className="App">
+    <div className="App">
         
     {!isAuthenticated && (
       <header className="navigation1">
@@ -342,5 +342,6 @@ function App() {
       </div>    
     );   
 }
+
 
 export default App;

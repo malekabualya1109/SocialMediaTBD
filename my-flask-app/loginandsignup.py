@@ -243,5 +243,5 @@ if __name__ == '__main__':
 
 
 
-#for testing make api calls , i'm sending messages in between, make calls to my websites
-# good input and bad input, as a unit test, i can put my errors as unit test
+
+
