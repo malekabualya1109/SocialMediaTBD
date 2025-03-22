@@ -4,12 +4,19 @@ import os
 from postcreation import post_bp
 from uploadstory import uploadstory_bp
 from tkinter import * #this is for the message box
+import getpass  # Maria's changes: used for password prompt
 
 #the python sql libra
 import pymysql
 
 app = Flask(__name__)
-CORS(app)  # This will allow requests from any origin
+
+#not permanent, i am trying something
+app.secret_key = 'mykey'
+CORS(app, supports_credentials=True)  # This will allow requests from any origin
+
+# Maria's changes: Prompt for MySQL password
+mysql_password = getpass.getpass("Enter your MySQL root password: ")
 
 # this is to set up uploaded folder
 UPLOAD_FOLDER = './uploads'
@@ -41,7 +48,8 @@ def admin():
     try:
         # connecting  to MySQL without specifying a database
 
-        connection = pymysql.connect(host='localhost', user='tea', password='')
+        # Maria's changes: using prompted MySQL password
+        connection = pymysql.connect(host='localhost', user='root', password=mysql_password)
         cursor = connection.cursor()
 
         # checking  if the admin user exists in the MySQL system database
@@ -66,7 +74,6 @@ def admin():
         print("Error creating admin user:", e)
 
 
-@app.route('/api/signup', methods=['POST'])
 
 
 #note for my self: the numbers are htttp status codes that returns with json if a request is successful or not
@@ -94,8 +101,8 @@ def signup():
 
     try:
 
-        # connection to dbms
-        theSQL= pymysql.connect(host='localhost', user='tea', password='')
+        # Maria's changes: using prompted MySQL password
+        theSQL = pymysql.connect(host='localhost', user='root', password=mysql_password)
 
             #store password in the a
             # third party autentificati
@@ -159,8 +166,8 @@ def login():
         return jsonify({"error": "Username or password cannot be empty"}), 400
 
     try:
-        # Connect to the existing 'userdata' database
-        theSQL= pymysql.connect(host='localhost', user='tea', password='', database='userdata' )
+        # Maria's changes: using prompted MySQL password
+        theSQL = pymysql.connect(host='localhost', user='root', password=mysql_password, database='userdata')
         mycursor = theSQL.cursor()
 
         #store password in a json file
@@ -192,6 +199,8 @@ def login():
 # the interst part and i'm not done with it yet because i didn't completely store this in the databse
 
 @app.route('/api/set_interests', methods=['POST'])
+
+#test the route , with postmen
 def set_interests():
 
     #first error, i was not creating the databse earlier, solved it yayyyys
@@ -202,7 +211,8 @@ def set_interests():
 
     #table creation and stuff
     try:
-        theSQL = pymysql.connect(host='localhost', user='tea', password='', database='userdata')
+        # Maria's changes: using prompted MySQL password
+        theSQL = pymysql.connect(host='localhost', user='root', password=mysql_password, database='userdata')
         mycursor = theSQL.cursor()
         query='create table if not exists user_interests(id int auto_increment primary key, user_id int not null, interest_id int not null)'
 
@@ -218,12 +228,21 @@ def set_interests():
 
         return jsonify({"message": "Interests saved successfully"}), 200
 
+        #check messages
+
 
     except:
         return jsonify({"error": "Could not connect to database"}), 500
     
 
+#i want to check if the page can stay logged in when i reload the page, but i dont know how to approach it yet, so this is a start
+
+@app.route('/api/check_session', methods=['GET'])
+def check_session():
+    if 'user_id' in session:
+        return jsonify({"logged_in": True, "user_id": session['user_id'], "username": session.get('username')})
+    return jsonify({"logged_in": False})
+
 if __name__ == '__main__':
     admin()
     app.run(debug=True)
-
