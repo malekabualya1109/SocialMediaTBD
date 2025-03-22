@@ -226,4 +226,3 @@ def set_interests():
 if __name__ == '__main__':
     admin()
     app.run(debug=True)
-
