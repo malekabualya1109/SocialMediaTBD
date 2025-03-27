@@ -18,7 +18,8 @@ def create_post():
         'id': len(posts) + 1,
         'user_id': data['user_id'],
         'content': data['content'].strip(),
-        'timestamp': datetime.utcnow().isoformat()
+        'timestamp': datetime.utcnow().isoformat(),
+        'repost_count': 0  # new field added
     }
 
     posts.append(new_post)
@@ -44,12 +45,16 @@ def repost():
     if not original_post:
         return jsonify({'error': 'Original post not found'}), 404
 
+    # Increment repost count
+    original_post['repost_count'] = original_post.get('repost_count', 0) + 1
+
     repost_content = f"Repost from User {original_post['user_id']}: {original_post['content']}"
     new_post = {
         'id': len(posts) + 1,
         'user_id': data['user_id'],
         'content': repost_content,
-        'timestamp': datetime.utcnow().isoformat()
+        'timestamp': datetime.utcnow().isoformat(),
+        'repost_count': 0  # reposts start fresh
     }
 
     posts.append(new_post)

@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-function ViewPosts() {
-  const [posts, setPosts] = useState([]);
-
+function ViewPosts({ posts, setPosts }) {
   const fetchPosts = async () => {
     try {
       const response = await fetch('http://127.0.0.1:5000/api/posts');
@@ -32,7 +30,8 @@ function ViewPosts() {
       const data = await response.json();
 
       if (response.status === 201) {
-        setPosts((prev) => [data.post, ...prev]);
+        // Refresh all posts to get updated repost counts
+        fetchPosts();
       } else {
         console.error("Repost failed:", data);
       }
@@ -57,6 +56,8 @@ function ViewPosts() {
               <strong>User {post.user_id}:</strong> {post.content}
               <br />
               <small>{new Date(post.timestamp).toLocaleString()}</small>
+              <br />
+              <em>Reposts: {post.repost_count || 0}</em>
               <br />
               <button onClick={() => handleRepost(post.id)}>Repost</button>
             </li>
