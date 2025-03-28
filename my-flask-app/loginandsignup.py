@@ -11,9 +11,7 @@ import pymysql
 
 app = Flask(__name__)
 
-#not permanent, i am trying something
-app.secret_key = 'mykey'
-CORS(app, supports_credentials=True)  # This will allow requests from any origin
+CORS(app)  # This will allow requests from any origin
 
 # Maria's changes: Prompt for MySQL password
 mysql_password = getpass.getpass("Enter your MySQL root password: ")
