@@ -143,8 +143,8 @@ def signup():
 
 
     except :
-        print("Error in signup route:", e)
-        return jsonify({"error": str(e)}), 500
+        print("Error in signup route:")
+      #  return jsonify({"error": str(e)}), 500
 
     
     #insert into the ldata

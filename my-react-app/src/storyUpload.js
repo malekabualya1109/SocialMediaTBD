@@ -1,13 +1,14 @@
 /* Mona */
 import React, { useState } from 'react';
 import axios from 'axios'; // to make API requests
+import { useNavigate } from 'react-router-dom';
 
 function StoryUpload() {
     const [file, setFile] = useState(null);  /* state to manage the selected file */
     const [preview, setPreview] = useState(null);   /* state to store the preview URL of the selected image */
     const [progress, setProgress] = useState(0);   /* state to keep track of upload progress percentage */
     const [uploadedStories, setUploadedStories] = useState([]);  /* state to store list of story images */
-
+    const navigate = useNavigate();
 
     /* function to handle file selection from input field */
     const handleChange = (e) => {
@@ -56,7 +57,7 @@ function StoryUpload() {
                 response.data.metadata,
             ]);
             console.log('Upload Successful:', response.data); // log success response
-       
+            navigate('/')
         } catch (error){
             console.error('Upload Failed:', error); //upload fails
         }
