@@ -11,9 +11,7 @@ import pymysql
 
 app = Flask(__name__)
 
-#not permanent, i am trying something
-app.secret_key = 'mykey'
-CORS(app, supports_credentials=True)  # This will allow requests from any origin
+CORS(app)  # This will allow requests from any origin
 
 # Maria's changes: Prompt for MySQL password
 mysql_password = getpass.getpass("Enter your MySQL root password: ")
@@ -38,10 +36,6 @@ def home():
     return "Backend message sending to front end"
 
 
-"""
-
-"don't know if this works yet, but i'm trying to see if i can have a user with all priveleges so that it can connect the SQL database to other computers"
-"""
 
 def admin():
 
@@ -70,17 +64,10 @@ def admin():
             print("Admin user created successfully with all privileges.")
 
         connection.close()
-    except Exception as e:
-        print("Error creating admin user:", e)
 
+    except:
 
-
-
-#note for my self: the numbers are htttp status codes that returns with json if a request is successful or not
-
-# def connect_datase():
-#     if passwordEntry.get()==''  or passwordEntry.get()==' '  :
-#         messagebox.showerror('empty fields')
+        return jsonify({"error": "Error creating admin user"}), 400
 
 
 
@@ -143,8 +130,9 @@ def signup():
 
 
     except :
-        print("Error in signup route:")
-      #  return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Error in signup route"}), 400
+        
+        
 
     
     #insert into the ldata
@@ -190,8 +178,7 @@ def login():
             return jsonify({"error": "Invalid credentials"}), 401
 
     except:
-        print("Error during login query:", e)
-        return jsonify({"error": "Database query failed"}), 500
+        return jsonify({"error": "Error during login query"}), 400
 
     theSQL.close()
 
@@ -235,13 +222,7 @@ def set_interests():
         return jsonify({"error": "Could not connect to database"}), 500
     
 
-#i want to check if the page can stay logged in when i reload the page, but i dont know how to approach it yet, so this is a start
 
-@app.route('/api/check_session', methods=['GET'])
-def check_session():
-    if 'user_id' in session:
-        return jsonify({"logged_in": True, "user_id": session['user_id'], "username": session.get('username')})
-    return jsonify({"logged_in": False})
 
 if __name__ == '__main__':
     admin()
