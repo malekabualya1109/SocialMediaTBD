@@ -66,11 +66,10 @@ def admin():
             print("Admin user created successfully with all privileges.")
 
         connection.close()
-        
+
     except:
 
         return jsonify({"error": "Error creating admin user"}), 400
-
 
 
 
