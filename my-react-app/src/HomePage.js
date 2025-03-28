@@ -8,6 +8,7 @@ import DailyForum from './dailyForum';
 import './smallerPage.css';
 import './user-profile.css';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function HomePage(){
     const [message, setMessage] = useState('');
@@ -31,7 +32,19 @@ function HomePage(){
   
     //Fatimah:user id for the interest
     const[userId, setUserId] = useState(false);
-  
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+      const isUserAuthenticated = localStorage.getItem('isAuthenticated');
+      if(isUserAuthenticated) {
+        setIsAuthenticated(true);
+        setUsername(localStorage.getItem('username'));
+      }
+      else{
+        setIsAuthenticated(false);
+      }
+    }, [])
   
     // Fatimah: Hard-coded available interests for now
     const availableInterests = [
@@ -133,7 +146,10 @@ function HomePage(){
   
         if (response.ok) {
           setIsAuthenticated(true);
+          localStorage.setItem('isAuthenticated', true);
+          localStorage.setItem('username', username)
           setAuthMessage('You logged in successfully. Welcome to Tea Talks!');
+          navigate('/');
         } else {
           setAuthMessage(data.error || 'Login failed.');
         }
@@ -141,6 +157,14 @@ function HomePage(){
         setAuthMessage('Error connecting to server');
       }
     };
+
+    // MONA: handling logout logic
+    const handleLogout = () => {
+      setIsAuthenticated(false);
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('username');
+      navigate('/');
+    }
   
     // Fatimah: created the sign-up function
     const handleSignUp = async () => {
@@ -159,6 +183,9 @@ function HomePage(){
   
           setAuthMessage('You signed up successfully. Welcome to Tea Talks!');
           setShowInterestsPrompt(true);
+          localStorage.setItem('isAuthenticated', true);
+          localStorage.setItem('username', username);
+          navigate('/');
         } else {
           setAuthMessage(data.error || 'Signup failed.');
         }
@@ -226,6 +253,7 @@ function HomePage(){
                         <ul className="setting-menu">
                           <li>Change Password</li>
                           <li>Update Username</li>
+                          <button onClick={handleLogout}>Logout</button>
                         </ul>
                       )}
                     </div>
@@ -236,8 +264,11 @@ function HomePage(){
      
               <section className="sidebar">
                 <header className="storySection">
-                  <StoryUpload />
+                  <div className="uploadStory-link">
+                    <Link to="/upload-story">New Story</Link>
+                  </div>
                 </header>
+          
                 {/* Maria Added DailyForum below StoryUpload */}
                 <div className = "daily-forum-container">
                   <DailyForum username={username} />
@@ -253,6 +284,8 @@ function HomePage(){
               </footer>
             </>
           )}
+
+          
       
           {/* Display the fetched message from Flask */}
           {/* <p>{message || 'Backend data stuff'}</p> */}
