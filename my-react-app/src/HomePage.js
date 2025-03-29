@@ -268,11 +268,14 @@ function HomePage(){
                     <Link to="/upload-story">New Story</Link>
                   </div>
                 </header>
+                
+                {/*Maria's link*/}
+                <header className = "daily-forum">
+                  <div className = "dailyForum-link">
+                    <Link to="/daily-forum">Daily Forum</Link>
+                  </div>
+                </header>
           
-                {/* Maria Added DailyForum below StoryUpload */}
-                <div className = "daily-forum-container">
-                  <DailyForum username={username} />
-                </div>
               </section>
   
               <section className="friendbar">

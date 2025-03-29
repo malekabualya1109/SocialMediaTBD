@@ -6,6 +6,9 @@ import HomePage from "./HomePage.js";
 import UserProfile from "./userProfile.js"; 
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import StoryUpload from './storyUpload.js';
+import DailyForum from './dailyForum.js';
+
+
 
 /*File Archive: 
   - HomePage.js = Login code and pretty much everything that was originally in app.js 
@@ -19,6 +22,8 @@ import StoryUpload from './storyUpload.js';
 function App() {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+
   return (
     <Router>
       <Routes>
@@ -26,7 +31,12 @@ function App() {
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/upload-story" element={<StoryUpload />} />
       </Routes>
+      <Routes>
+        <Route path="/daily-forum" element={<DailyForum username={"User"} />} />
+      </Routes>
     </Router>
   );    
 }; 
+
+
 export default App;
