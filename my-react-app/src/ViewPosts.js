@@ -30,13 +30,31 @@ function ViewPosts({ posts, setPosts }) {
       const data = await response.json();
 
       if (response.status === 201) {
-        // Refresh all posts to get updated repost counts
         fetchPosts();
       } else {
         console.error("Repost failed:", data);
       }
     } catch (error) {
       console.error("Error reposting:", error);
+    }
+  };
+
+  const handleDelete = async (postId) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/api/posts/${postId}`, {
+        method: 'DELETE',
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Post deleted:", data);
+        fetchPosts();
+      } else {
+        console.error("Failed to delete post:", data);
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error);
     }
   };
 
@@ -60,6 +78,9 @@ function ViewPosts({ posts, setPosts }) {
               <em>Reposts: {post.repost_count || 0}</em>
               <br />
               <button onClick={() => handleRepost(post.id)}>Repost</button>
+              {post.user_id === 1 && post.content.startsWith("Repost from User") && (
+                <button onClick={() => handleDelete(post.id)}>Delete Repost</button>
+              )}
             </li>
           ))}
         </ul>
