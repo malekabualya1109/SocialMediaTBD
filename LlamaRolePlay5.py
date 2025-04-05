@@ -371,17 +371,26 @@ if DEBUG_PRINTS: print("basic_model_run: ", basic_model_run(prompt4))
 
 # print("Time taken: ", time.time() - start_time)
 
+import csv
+with open('chromaHistory.csv', 'r') as f:
+    lines = sum(1 for line in f) # count the lines in the chromaHistory.csv file so as to know where the next line is
+
+with open('chromaHistory.csv', 'a', newline='') as f:
+    writer = csv.writer(f, quotechar='"', quoting=csv.QUOTE_NONNUMERIC) 
+    # This quoting=csv.QUOTE_NONNUMERIC was the only way to get regular "quotes" in only just the second column (after so many hours of trying)
+    writer.writerow([lines, prompt3]) # add the prompt to a csv containing history of prompts at lines line number
+
 
 
 # Example input and output:
 
-# $ python3 LlamaRolePlay3.py "It is night time and you just saw Jake." "Jake" "What is the capital of Algoria?
+# $ python3 LlamaRolePlay5.py "It is night time and you just saw Jake." "Jake" "What is the capital of Algoria?
 # The Capital of Allegria is Allegria.
-# $ python3 LlamaRolePlay3.py "It is night time and you just saw Jake." "Jake" "What is your name?"
+# $ python3 LlamaRolePlay5.py "It is night time and you just saw Jake." "Jake" "What is your name?"
 # I'm Cleo.
-# $ python3 LlamaRolePlay3.py "It is night time and you just saw Jake." "Jake" "What is your favorite season?"
+# $ python3 LlamaRolePlay5.py "It is night time and you just saw Jake." "Jake" "What is your favorite season?"
 # My favorite season is Spring. There's something about the beautiful flowers and greenery that comes with it that always makes me happy.
-# $ python3 LlamaRolePlay3.py "It is night time and you just saw Jake." "Jake" "What is your birthday?"
+# $ python3 LlamaRolePlay5.py "It is night time and you just saw Jake." "Jake" "What is your birthday?"
 # Cleo's birthday is April 24th.
 
 
