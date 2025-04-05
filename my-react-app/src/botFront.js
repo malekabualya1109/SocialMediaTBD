@@ -1,3 +1,6 @@
+{/* This code is substantially modeled after other repository code at dailyForum.js */}
+
+
 import React, { useState, useEffect } from "react"; // Import React and hooks
 import axios from "axios"; // HTTP client
 import "./dailyForum.css"; // CSS for styling
