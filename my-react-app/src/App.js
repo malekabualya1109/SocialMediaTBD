@@ -10,6 +10,7 @@ import DailyForum from './dailyForum.js';
 
 /* for Bot */
 import BotForum from './botFront.js'; // Import the bot forum component
+import Interest from './Interest.js';
 
 /*File Archive: 
   - HomePage.js = Login code and pretty much everything that was originally in app.js 
@@ -31,14 +32,20 @@ function App() {
         <Route path="/" element={<HomePage /> } />
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/upload-story" element={<StoryUpload />} />
+        <Route path="/interests" element={<Interest />} />
       </Routes>
       <Routes>
         <Route path="/daily-forum" element={<DailyForum username={"User"} />} />
         <Route path="/bot-forum" element={<BotForum username={"User"} />} /> 
       </Routes>
     </Router>
-  );    
+  ); 
+ 
 }; 
+
+
+
+
 
 
 export default App;

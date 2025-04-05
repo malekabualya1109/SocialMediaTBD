@@ -94,74 +94,81 @@ function DailyForum({ username }) {
   };
 
   return (
-    <div className="container"> {/* Main container */}
-      <h1>Daily Forum</h1> {/* Title */}
-      <h2>Go Ahead... Spill some tea</h2> {/* Subtitle */}
-
-      <div className="comments-section"> {/* Section for all comments */}
-        {comments.length > 0 ? (
-          comments.map((cmt, index) => (
-            <div key={index} className="comment-box"> {/* Individual comment */}
-              <p>
-                <strong>{cmt.username}</strong> - {format(cmt.timestamp)} {/* Timestamp display */}
-              </p>
-              <p>{cmt.text}</p> {/* Comment text */}
-
-              <button onClick={() => likeComment(cmt.timestamp)}>Like {cmt.likes}</button> {/* Like button */}
-              <button onClick={() => setReplyingTo(cmt.timestamp)}>Reply</button> {/* Reply button */}
-
-              {replyingTo === cmt.timestamp && (
-                <div className="reply-input"> {/* Show reply input for selected comment */}
-                  <input
-                    type="text"
-                    value={replyText}
-                    onChange={(e) => setReplyText(e.target.value)}
-                    placeholder="Type your reply..."
-                  />
-                  <button onClick={() => replyComment(cmt.timestamp, replyText)}>Send Reply</button>
-                </div>
-              )}
-
-              {cmt.replies && cmt.replies.length > 0 && (
-                <div className="replies"> {/* Nested replies */}
-                  {cmt.replies.map((reply, idx) => (
-                    <div key={idx} className="reply-box">
-                      <p>
-                        <strong>{reply.username}</strong> replying to{" "}
-                        <strong>{cmt.username}</strong> - {format(reply.timestamp)} {/* Reply timestamp */}
-                      </p>
-                      <p>{reply.text}</p> {/* Reply text */}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))
-        ) : (
-          <p>No comments yet. Be the first to comment</p> // Message for empty state
-        )}
-      </div>
-
-      <div className="comment-input"> {/* Input for new comment */}
-        <input
-          type="text"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          onKeyDown={sendOnEnter}
-          placeholder="Type your comment"
-          className="input-bar"
-        />
-        <button onClick={postComment} className="send-button">Send</button> {/* Submit comment */}
-        <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="emoji-button">😄</button> {/* Emoji toggle */}
-
-        {showEmojiPicker && (
-          <div className="emoji-picker"> {/* Emoji picker popup */}
-            <Picker data={data} onEmojiSelect={hideEmojiSet} />
+    <>
+      <div className="container">
+        <img src="/dailyforumbanner.png" alt="Daily Forum Banner" className="banner-image" />
+  
+        <div className="comments-section">
+          {comments.length > 0 ? (
+            comments.map((cmt, index) => (
+              <div key={index} className="comment-box">
+                <p>
+                  <strong>{cmt.username}</strong> - {format(cmt.timestamp)}
+                </p>
+                <p>{cmt.text}</p>
+  
+                <button className="like-button" onClick={() => likeComment(cmt.timestamp)}>
+                  Like {cmt.likes}
+                </button>
+                <button className="reply-button" onClick={() => setReplyingTo(cmt.timestamp)}>
+                  Reply
+                </button>
+  
+                {replyingTo === cmt.timestamp && (
+                  <div className="reply-input">
+                    <input
+                      type="text"
+                      value={replyText}
+                      onChange={(e) => setReplyText(e.target.value)}
+                      placeholder="Type your reply..."
+                    />
+                    <button onClick={() => replyComment(cmt.timestamp, replyText)}>Send Reply</button>
+                  </div>
+                )}
+  
+                {cmt.replies && cmt.replies.length > 0 && (
+                  <div className="replies">
+                    {cmt.replies.map((reply, idx) => (
+                      <div key={idx} className="reply-box">
+                        <p>
+                          <strong>{reply.username}</strong> replying to{" "}
+                          <strong>{cmt.username}</strong> - {format(reply.timestamp)}
+                        </p>
+                        <p>{reply.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <p>No comments yet. Be the first to comment</p>
+          )}
+        </div>
+  
+        <div className="comment-input">
+          <div className="input-wrapper">
+            <input
+              type="text"
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              onKeyDown={sendOnEnter}
+              placeholder="Type your comment"
+              className="input-bar"
+            />
+            <button onClick={postComment} className="icon-button send">Send</button>
+            <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="icon-button emoji">😄</button>
           </div>
-        )}
+  
+          {showEmojiPicker && (
+            <div className="emoji-picker">
+              <Picker data={data} onEmojiSelect={hideEmojiSet} />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
-
-export default DailyForum; // Export component
+  
+export default DailyForum; 

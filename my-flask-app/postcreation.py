@@ -19,7 +19,7 @@ def create_post():
         'user_id': data['user_id'],
         'content': data['content'].strip(),
         'timestamp': datetime.utcnow().isoformat(),
-        'repost_count': 0  # new field added
+        'repost_count': 0
     }
 
     posts.append(new_post)
@@ -45,7 +45,6 @@ def repost():
     if not original_post:
         return jsonify({'error': 'Original post not found'}), 404
 
-    # Increment repost count
     original_post['repost_count'] = original_post.get('repost_count', 0) + 1
 
     repost_content = f"Repost from User {original_post['user_id']}: {original_post['content']}"
@@ -54,10 +53,37 @@ def repost():
         'user_id': data['user_id'],
         'content': repost_content,
         'timestamp': datetime.utcnow().isoformat(),
-        'repost_count': 0  # reposts start fresh
+        'repost_count': 0
     }
 
     posts.append(new_post)
     print(f"[REPOST CREATED] {new_post}")
 
     return jsonify({'message': "Repost successful!", 'post': new_post}), 201
+
+# Delete a post (only deletes reposts cleanly)
+@post_bp.route('/api/posts/<int:post_id>', methods=['DELETE'])
+def delete_post(post_id):
+    global posts
+    post_to_delete = next((p for p in posts if p['id'] == post_id), None)
+
+    if not post_to_delete:
+        return jsonify({'error': 'Post not found'}), 404
+
+    if post_to_delete['content'].startswith("Repost from User"):
+        original_user_line = post_to_delete['content'].split(":")[0]
+        original_user_id = original_user_line.split()[-1]
+        original_content = ":".join(post_to_delete['content'].split(":")[1:]).strip()
+
+        original_post = next(
+            (p for p in posts if p['user_id'] == int(original_user_id) and p['content'] == original_content),
+            None
+        )
+
+        if original_post:
+            original_post['repost_count'] = max(0, original_post.get('repost_count', 1) - 1)
+
+    posts = [p for p in posts if p['id'] != post_id]
+    print(f"[POST DELETED] ID {post_id}")
+
+    return jsonify({'message': 'Post deleted successfully.'}), 200

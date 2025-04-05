@@ -66,7 +66,6 @@ function StoryUpload() {
     return (
         <div className="storySection">
             <h2>Upload Story</h2>
-
             <input type="file" accept="image/*,video/*" onChange={handleChange} />
 
             {preview && preview.type === 'video' && (
@@ -101,7 +100,7 @@ function StoryUpload() {
             )}
             
 
-            <div className="storyContainer">
+            {/*<div className="storyContainer">
                 {uploadedStories.length > 0 && (
                     <div style={{ display: 'flex', overflowX: 'scroll', padding: '10px' }}>
                         {uploadedStories.map((story, index) => (
@@ -119,7 +118,7 @@ function StoryUpload() {
                         ))}
                     </div>
                 )}
-            </div>
+            </div>*/}
         </div>
     );
 }

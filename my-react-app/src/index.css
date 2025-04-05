@@ -12,6 +12,11 @@
   background-color: #4f0000;
 }
 
+/*Navigation Header*/
+.navigationHeader > ul{
+  margin-right: 3rem; 
+}
+
 /*Header "Tea Talks"*/
 .navigation1 > h1 { 
   display: flex; 
@@ -66,6 +71,7 @@ ul li > ul li{
   display: flex;
   flex-direction: column;
   justify-content: left;
+  margin-right: 3rem; 
   z-index: 1;
   padding: 0%;
 }

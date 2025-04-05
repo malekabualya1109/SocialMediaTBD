@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import './App.css';
-import StoryUpload from './storyUpload';
 import ViewPosts from './ViewPosts';
 import './index.css'; 
 import './userAccount.css';
-import DailyForum from './dailyForum';
 import './smallerPage.css';
 import './user-profile.css';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
@@ -33,7 +31,19 @@ function HomePage(){
     //Fatimah:user id for the interest
     const[userId, setUserId] = useState(false);
 
+    //mona: to upload image
+    const [uploadedStories, setUploadedStories] = useState([]);
+
     const navigate = useNavigate();
+
+    //mona: fetching stories
+    useEffect(() => {
+      fetch('http://localhost:5000/api/stories')
+        .then((res) => res.json())
+        .then((data) => setUploadedStories(data))
+        .catch((err) => console.error('Error fetching stories:', err));
+    }, []);
+    
 
     useEffect(() => {
       const isUserAuthenticated = localStorage.getItem('isAuthenticated');
@@ -166,59 +176,33 @@ function HomePage(){
       navigate('/');
     }
   
-    // Fatimah: created the sign-up function
-    const handleSignUp = async () => {
-      try {
-        const response = await fetch('http://127.0.0.1:5000/api/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password }),
-        }); 
-        const data = await response.json();
-  
-        if (response.ok) {
-          setIsAuthenticated(true);
-          //when you sign up, the user id becomes the user id of the one who just signed up
-          setUserId(data.user_id);
-  
-          setAuthMessage('You signed up successfully. Welcome to Tea Talks!');
-          setShowInterestsPrompt(true);
-          localStorage.setItem('isAuthenticated', true);
-          localStorage.setItem('username', username);
-          navigate('/');
-        } else {
-          setAuthMessage(data.error || 'Signup failed.');
-        }
-      } catch (error) {
-        setAuthMessage('Error connecting to server');
-      }
-    };
-  
-    //Fatimah: the interest bar:
-      // Save selected interests (after sign up)
-    const handleSaveInterests = async () => {
-      try {
-        const response = await fetch('http://127.0.0.1:5000/api/set_interests', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_id: userId, // the user id cause why not
-            interests: selectedInterests,
-          }),
-        });
-        const data = await response.json();
-  
-        if (response.ok) {
-          // Hide the prompt
-          setShowInterestsPrompt(false);
-          console.log('Interests saved successfully!');
-        } else {
-          console.error('Error saving interests:', data);
-        }
-      } catch (error) {
-        console.error('Error connecting to server:', error);
-      }
-    };
+// Fatimah
+const handleSignUp = async () => {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await response.json();
+
+    if (response.ok) {
+      setIsAuthenticated(true);
+      // Store authentication info as needed
+      localStorage.setItem('isAuthenticated', true);
+      localStorage.setItem('username', username);
+      
+      // Navigate to the interests page and pass the user ID
+      navigate('/interests', { state: { userId: data.user_id } });
+    } else {
+      setAuthMessage(data.error || 'Signup failed.');
+    }
+  } catch (error) {
+    setAuthMessage('Error connecting to server');
+  }
+};
+
+
     
     /*Emma */
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -242,7 +226,11 @@ function HomePage(){
           {isAuthenticated && (
             <>
               <header className="header">
+              <div className="mugIcon1">
+                <i className="fa-solid fa-mug-hot"></i>
                 <h1>Tea Talks</h1>
+              </div>
+              <div className = "navigationHeader">
                 <ul>
                   <li>Notifications</li>
                   <li><Link to="/profile">User Profile</Link></li>
@@ -259,6 +247,7 @@ function HomePage(){
                     </div>
                   </li>
                 </ul>
+              </div>
               </header>
               
      
@@ -268,6 +257,24 @@ function HomePage(){
                     <Link to="/upload-story">New Story</Link>
                   </div>
                 </header>
+                
+                {/* Shoe uploaded story circles */}
+                <div className="storyContainer">
+                  {uploadedStories.length > 0 && (
+                    <div style={{ display: 'flex', overflowX: 'scroll', padding: '10px' }}>
+                      {uploadedStories.map((story, index) => (
+                        <div key= { index } className="storyCircle">
+                          <img
+                            src={`http://localhost:5000/uploads/${story.filename}`}
+                            alt={`Story ${index}`}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            onError={(e) => console.log("Image load error: ", e.target.src)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 
                 {/*Maria's link*/}
                 <header className = "daily-forum">
@@ -359,26 +366,7 @@ function HomePage(){
   
   
           {/* This interest prompt only shows if someone signs up */}
-          {showInterestsPrompt && (
-            <div className="interest-modal">
-              <div className="interest-modal-content">
-                <h3>Pick your interests</h3>
-                {availableInterests.map((intObj) => (
-                  <label key={intObj.id} style={{ display: 'block' }}>
-                    <input
-                      type="checkbox"
-                      checked={selectedInterests.includes(intObj.id)}
-                      onChange={() => handleInterestChange(intObj.id)}
-                    />
-                    {intObj.label}
-                  </label>
-                ))}
-                <button onClick={handleSaveInterests} style={{ marginTop: '10px' }}>
-                  Save Interests
-                </button>
-              </div>
-            </div>
-          )}
+
   
               </section>
             </div>
