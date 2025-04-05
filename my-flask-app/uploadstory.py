@@ -79,3 +79,14 @@ def uploaded_file(filename):
     except Exception as e:
         print(f"Error serving file: {e}")
         return jsonify({"error": "Failed to retrieve the file"}), 404
+
+# Get metadata of all uploaded stories
+@uploadstory_bp.route('/api/stories', methods=['GET'])
+def get_uploaded_stories():
+    try:
+        files = os.listdir(UPLOAD_FOLDER)
+        story_files = [{"filename": file} for file in files if os.path.isfile(os.path.join(UPLOAD_FOLDER, file))]
+        return jsonify(story_files)
+    except Exception as e:
+        print(f"Error reading uploads folder: {e}")
+        return jsonify({"error": "Failed to read uploads folder"}), 500
