@@ -7,6 +7,7 @@ import UserProfile from "./userProfile.js";
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import StoryUpload from './storyUpload.js';
 import DailyForum from './dailyForum.js';
+import Interest from './Interest.js';
 
 
 
@@ -30,13 +31,19 @@ function App() {
         <Route path="/" element={<HomePage /> } />
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/upload-story" element={<StoryUpload />} />
+        <Route path="/interests" element={<Interest />} />
       </Routes>
       <Routes>
         <Route path="/daily-forum" element={<DailyForum username={"User"} />} />
       </Routes>
     </Router>
-  );    
+  ); 
+ 
 }; 
+
+
+
+
 
 
 export default App;
