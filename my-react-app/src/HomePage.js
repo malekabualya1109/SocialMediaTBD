@@ -179,59 +179,33 @@ function HomePage(){
       navigate('/');
     }
   
-    // Fatimah: created the sign-up function
-    const handleSignUp = async () => {
-      try {
-        const response = await fetch('http://127.0.0.1:5000/api/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password }),
-        }); 
-        const data = await response.json();
-  
-        if (response.ok) {
-          setIsAuthenticated(true);
-          //when you sign up, the user id becomes the user id of the one who just signed up
-          setUserId(data.user_id);
-  
-          setAuthMessage('You signed up successfully. Welcome to Tea Talks!');
-          setShowInterestsPrompt(true);
-          localStorage.setItem('isAuthenticated', true);
-          localStorage.setItem('username', username);
-          navigate('/');
-        } else {
-          setAuthMessage(data.error || 'Signup failed.');
-        }
-      } catch (error) {
-        setAuthMessage('Error connecting to server');
-      }
-    };
-  
-    //Fatimah: the interest bar:
-      // Save selected interests (after sign up)
-    const handleSaveInterests = async () => {
-      try {
-        const response = await fetch('http://127.0.0.1:5000/api/set_interests', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_id: userId, // the user id cause why not
-            interests: selectedInterests,
-          }),
-        });
-        const data = await response.json();
-  
-        if (response.ok) {
-          // Hide the prompt
-          setShowInterestsPrompt(false);
-          console.log('Interests saved successfully!');
-        } else {
-          console.error('Error saving interests:', data);
-        }
-      } catch (error) {
-        console.error('Error connecting to server:', error);
-      }
-    };
+// Fatimah
+const handleSignUp = async () => {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await response.json();
+
+    if (response.ok) {
+      setIsAuthenticated(true);
+      // Store authentication info as needed
+      localStorage.setItem('isAuthenticated', true);
+      localStorage.setItem('username', username);
+      
+      // Navigate to the interests page and pass the user ID
+      navigate('/interests', { state: { userId: data.user_id } });
+    } else {
+      setAuthMessage(data.error || 'Signup failed.');
+    }
+  } catch (error) {
+    setAuthMessage('Error connecting to server');
+  }
+};
+
+
     
     /*Emma */
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -383,26 +357,7 @@ function HomePage(){
   
   
           {/* This interest prompt only shows if someone signs up */}
-          {showInterestsPrompt && (
-            <div className="interest-modal">
-              <div className="interest-modal-content">
-                <h3>Pick your interests</h3>
-                {availableInterests.map((intObj) => (
-                  <label key={intObj.id} style={{ display: 'block' }}>
-                    <input
-                      type="checkbox"
-                      checked={selectedInterests.includes(intObj.id)}
-                      onChange={() => handleInterestChange(intObj.id)}
-                    />
-                    {intObj.label}
-                  </label>
-                ))}
-                <button onClick={handleSaveInterests} style={{ marginTop: '10px' }}>
-                  Save Interests
-                </button>
-              </div>
-            </div>
-          )}
+
   
               </section>
             </div>
