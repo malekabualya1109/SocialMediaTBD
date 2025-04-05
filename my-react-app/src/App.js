@@ -7,7 +7,13 @@ import UserProfile from "./userProfile.js";
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import StoryUpload from './storyUpload.js';
 import DailyForum from './dailyForum.js';
+<<<<<<< HEAD
 import Interest from './Interest.js';
+=======
+
+/* for Bot */
+import BotForum from './botFront.js'; // Import the bot forum component
+>>>>>>> 9e6da38d (Update React, Flask, and Python files to incorporate chatbot into flask and react app)
 
 /*File Archive: 
   - HomePage.js = Login code and pretty much everything that was originally in app.js 
@@ -33,6 +39,7 @@ function App() {
       </Routes>
       <Routes>
         <Route path="/daily-forum" element={<DailyForum username={"User"} />} />
+        <Route path="/bot-forum" element={<BotForum username={"User"} />} /> 
       </Routes>
     </Router>
   ); 
