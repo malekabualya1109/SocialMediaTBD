@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import './App.css';
-import StoryUpload from './storyUpload';
 import ViewPosts from './ViewPosts';
 import './index.css'; 
 import './userAccount.css';
-import DailyForum from './dailyForum';
 import './smallerPage.css';
 import './user-profile.css';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 function HomePage(){
     const [message, setMessage] = useState('');
@@ -255,7 +252,11 @@ function HomePage(){
           {isAuthenticated && (
             <>
               <header className="header">
+              <div className="mugIcon1">
+                <i className="fa-solid fa-mug-hot"></i>
                 <h1>Tea Talks</h1>
+              </div>
+              <div className = "navigationHeader">
                 <ul>
                   <li>Notifications</li>
                   <li><Link to="/profile">User Profile</Link></li>
@@ -272,6 +273,7 @@ function HomePage(){
                     </div>
                   </li>
                 </ul>
+              </div>
               </header>
               
      
