@@ -9,8 +9,6 @@ import StoryUpload from './storyUpload.js';
 import DailyForum from './dailyForum.js';
 import Interest from './Interest.js';
 
-
-
 /*File Archive: 
   - HomePage.js = Login code and pretty much everything that was originally in app.js 
   - dailyForum.js = DailyForum code that is displayed on Homepage

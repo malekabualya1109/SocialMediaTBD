@@ -66,7 +66,6 @@ function StoryUpload() {
     return (
         <div className="storySection">
             <h2>Upload Story</h2>
-
             <input type="file" accept="image/*,video/*" onChange={handleChange} />
 
             {preview && preview.type === 'video' && (
