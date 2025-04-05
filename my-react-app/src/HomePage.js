@@ -275,6 +275,13 @@ function HomePage(){
                     <Link to="/daily-forum">Daily Forum</Link>
                   </div>
                 </header>
+
+                {/*Bot's link*/}
+                <header className = "bot-forum">
+                  <div className = "botForum-link">
+                    <Link to="/bot-forum">Bot Forum</Link>
+                  </div>
+                </header>
           
               </section>
   

@@ -9,7 +9,11 @@
 
 # pipelines as a helper is simpler than the other example
 from transformers import pipeline
+import torch
 
+# print("CUDA available:", torch.cuda.is_available())
+# print("Number of GPUs:", torch.cuda.device_count())
+# print("GPU name: ", torch.cuda.get_device_name(0))
 
 messages = [
     {"role": "user", "content": "Compare this distilled DeepSeek-R1 to the larger R1?"},

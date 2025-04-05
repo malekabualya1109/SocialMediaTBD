@@ -40,19 +40,22 @@ start_time = time.time() # start time of the program
 
 # Get user input:
 
-if __name__ == "__main__": prompt1 = sys.argv[1] # to assign system a role
-else: prompt1 = "Sample context"
-if __name__ == "__main__": prompt2 = sys.argv[2] # to assign a name to the user
-else: prompt2 = "Joe McGuillicutty"
-if __name__ == "__main__": prompt3 = sys.argv[3] # the input message from the user
-else: prompt3 = "Tell me this is just a sample run"
+# if __name__ == "__main__": prompt1 = sys.argv[1] # to assign system a role
+# else: prompt1 = "Sample context"
+# if __name__ == "__main__": prompt2 = sys.argv[2] # to assign a name to the user
+# else: prompt2 = "Joe McGuillicutty"
+# if __name__ == "__main__": prompt3 = sys.argv[3] # the input message from the user
+# else: prompt3 = "Tell me this is just a sample run"
 
+prompt1 = sys.argv[1] # to assign system a role
+prompt2 = sys.argv[2] # to assign a name to the user
+prompt3 = sys.argv[3] # the input message from the user
 
 
 # part of the code for chromadb from https://medium.com/@prajwal_/rag-with-huggingface-models-and-chroma-db-3f6ade28b5fe
 from datasets import load_dataset
 # Load your dataset
-dataset = load_dataset("csv", data_files='dbDataset2.csv')
+dataset = load_dataset("csv", data_files='dbDataset.csv')
 documents = dataset['train']['text']
 
 new_dataset = load_dataset("csv", data_files='chromaHistory.csv')
@@ -358,8 +361,8 @@ if DEBUG:
     print(time_taken)
 # delay_function(start_time, time_taken, clean_response) # delay the flow of execution if needed
 
-if __name__ == "__main__": print(clean_response)
-
+# if __name__ == "__main__": print(clean_response)
+print(clean_response)
 
 prompt4 = "What planet are you from?"
 if DEBUG_PRINTS: print("basic_model_run: ", basic_model_run(prompt4))
