@@ -107,7 +107,7 @@ function BotForum({ username }) {
 
   return (
     <div className="container"> {/* Main container */}
-      <h1>Bot Forum</h1> {/* Title */}
+      <h1>Chat Forum</h1> {/* Title */}
       <h2>Chat with me</h2> {/* Subtitle */}
 
       <div className="comments-section"> {/* Section for all comments */}
