@@ -9,6 +9,7 @@ import './smallerPage.css';
 import './user-profile.css';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function HomePage(){
     const [message, setMessage] = useState('');
@@ -33,7 +34,19 @@ function HomePage(){
     //Fatimah:user id for the interest
     const[userId, setUserId] = useState(false);
 
+    //mona: to upload image
+    const [uploadedStories, setUploadedStories] = useState([]);
+
     const navigate = useNavigate();
+
+    //mona: fetching stories
+    useEffect(() => {
+      fetch('http://localhost:5000/api/stories')
+        .then((res) => res.json())
+        .then((data) => setUploadedStories(data))
+        .catch((err) => console.error('Error fetching stories:', err));
+    }, []);
+    
 
     useEffect(() => {
       const isUserAuthenticated = localStorage.getItem('isAuthenticated');
@@ -268,6 +281,24 @@ function HomePage(){
                     <Link to="/upload-story">New Story</Link>
                   </div>
                 </header>
+                
+                {/* Shoe uploaded story circles */}
+                <div className="storyContainer">
+                  {uploadedStories.length > 0 && (
+                    <div style={{ display: 'flex', overflowX: 'scroll', padding: '10px' }}>
+                      {uploadedStories.map((story, index) => (
+                        <div key= { index } className="storyCircle">
+                          <img
+                            src={`http://localhost:5000/uploads/${story.filename}`}
+                            alt={`Story ${index}`}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            onError={(e) => console.log("Image load error: ", e.target.src)}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 
                 {/*Maria's link*/}
                 <header className = "daily-forum">

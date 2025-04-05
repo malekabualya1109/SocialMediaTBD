@@ -101,7 +101,7 @@ function StoryUpload() {
             )}
             
 
-            <div className="storyContainer">
+            {/*<div className="storyContainer">
                 {uploadedStories.length > 0 && (
                     <div style={{ display: 'flex', overflowX: 'scroll', padding: '10px' }}>
                         {uploadedStories.map((story, index) => (
@@ -119,7 +119,7 @@ function StoryUpload() {
                         ))}
                     </div>
                 )}
-            </div>
+            </div>*/}
         </div>
     );
 }
