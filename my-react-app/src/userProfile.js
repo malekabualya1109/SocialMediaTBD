@@ -26,9 +26,9 @@ function UserProfile() {
       reader.onloadend = () => {
         const imageUrl = reader.result;
   
-        // Check size before storing in localStorage
-        const sizeInBytes = imageUrl.length * (3/4); // Approximate base64 size
-        const maxStorageSize = 5 * 1024 * 1024; // 5MB
+        //Check size before storing in localStorage
+        const sizeInBytes = imageUrl.length * (3/4);
+        const maxStorageSize = 5 * 1024 * 1024; 
   
         if (sizeInBytes > maxStorageSize) {
           alert("Image is too large! Please choose a smaller one.");
