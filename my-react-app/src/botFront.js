@@ -1,4 +1,4 @@
-{/* This code is substantially modeled after other repository code at dailyForum.js */}
+//{/* This code is substantially modeled after other repository code at dailyForum.js */}
 
 
 import React, { useState, useEffect } from "react"; // Import React and hooks

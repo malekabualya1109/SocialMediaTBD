@@ -13,12 +13,21 @@ import BotForum from './botFront.js'; // Import the bot forum component
 import Interest from './Interest.js';
 
 /*File Archive: 
-  - HomePage.js = Login code and pretty much everything that was originally in app.js 
-  - dailyForum.js = DailyForum code that is displayed on Homepage
-  - userProfile.js = Personal account display
-  - storyUpload.js = Upload story on Homepage
+  - App.js = Routes to different pages. Contributors: Fatimah, Emma, Maria, Mona, Steven
+  - HomePage.js = Login code and pretty much everything that was originally in app.js. Contributors: Fatimah, Emma, Maria, Mona, Malek
+  - dailyForum.js = DailyForum code that is displayed on Homepage. Contributor: Maria
+  - dailyForum.css = Contributor: Maria
+  - storyUpload.js = Upload story on Homepage. Contributor: Mona
   - index.js = Renders this file (App.js), part of framework
-  - reportWebVitals = does not atm, part of framework
+  - reportWebVitals = does not atm, part of framework. 
+  - userProfile.js = javascript for the user profile page. Contributor: Emma
+  - user-profile.css = css styling for the user profile page. Contributor: Emma
+  - smallerPage.css = Not currently implemented. Used for when screen size shrinks. 
+  - index.js = Framework
+  - Interest.js = Contributor: Fatimah
+  - viewPosts.js = Post area on main page. Contributor: Malek
+  - userAccount.css = Contributors: Mona, Emma
+  - botFront.js = Ai chatbox. Contributor: Steven
 */
 
 function App() {
