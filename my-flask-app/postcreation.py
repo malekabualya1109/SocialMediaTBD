@@ -19,7 +19,9 @@ def create_post():
         'user_id': data['user_id'],
         'content': data['content'].strip(),
         'timestamp': datetime.utcnow().isoformat(),
-        'repost_count': 0
+        'repost_count': 0,
+        'likes': 0,               # NEW
+        'comments': []            # NEW
     }
 
     posts.append(new_post)
@@ -53,7 +55,9 @@ def repost():
         'user_id': data['user_id'],
         'content': repost_content,
         'timestamp': datetime.utcnow().isoformat(),
-        'repost_count': 0
+        'repost_count': 0,
+        'likes': 0,               # NEW
+        'comments': []            # NEW
     }
 
     posts.append(new_post)
@@ -87,3 +91,38 @@ def delete_post(post_id):
     print(f"[POST DELETED] ID {post_id}")
 
     return jsonify({'message': 'Post deleted successfully.'}), 200
+
+# ----------------------------
+# 🔥 NEW: Like a post
+# ----------------------------
+@post_bp.route('/api/posts/<int:post_id>/like', methods=['POST'])
+def like_post(post_id):
+    post = next((p for p in posts if p['id'] == post_id), None)
+    if not post:
+        return jsonify({'error': 'Post not found'}), 404
+
+    post['likes'] = post.get('likes', 0) + 1
+    print(f"[LIKE] Post {post_id} liked")
+    return jsonify({'message': 'Post liked', 'likes': post['likes']}), 200
+
+# ----------------------------
+# 🔥 NEW: Comment on a post
+# ----------------------------
+@post_bp.route('/api/posts/<int:post_id>/comment', methods=['POST'])
+def comment_post(post_id):
+    data = request.json
+    if not data or not data.get('user_id') or not data.get('text'):
+        return jsonify({'error': 'Invalid comment input'}), 400
+
+    post = next((p for p in posts if p['id'] == post_id), None)
+    if not post:
+        return jsonify({'error': 'Post not found'}), 404
+
+    comment = {
+        'user_id': data['user_id'],
+        'text': data['text'],
+        'timestamp': datetime.utcnow().isoformat()
+    }
+    post['comments'].append(comment)
+    print(f"[COMMENT] Post {post_id} new comment: {comment}")
+    return jsonify({'message': 'Comment added', 'comments': post['comments']}), 200
