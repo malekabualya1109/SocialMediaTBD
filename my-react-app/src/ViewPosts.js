@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 
 function ViewPosts({ posts, setPosts }) {
+  const [commentInputs, setCommentInputs] = useState({});
+
   const fetchPosts = async () => {
     try {
       const response = await fetch('http://127.0.0.1:5000/api/posts');
@@ -59,6 +61,49 @@ function ViewPosts({ posts, setPosts }) {
     }
   };
 
+  const handleLike = async (postId) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/api/posts/${postId}/like`, {
+        method: 'POST',
+      });
+      const data = await response.json();
+      if (response.ok) {
+        fetchPosts();
+      } else {
+        console.error("Failed to like post:", data);
+      }
+    } catch (error) {
+      console.error("Error liking post:", error);
+    }
+  };
+
+  const handleCommentInputChange = (postId, value) => {
+    setCommentInputs(prev => ({ ...prev, [postId]: value }));
+  };
+
+  const handleComment = async (postId) => {
+    const commentText = commentInputs[postId];
+    if (!commentText || commentText.trim() === '') return;
+
+    try {
+      const response = await fetch(`http://127.0.0.1:5000/api/posts/${postId}/comment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: 1, text: commentText }), // Replace with dynamic user_id
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setCommentInputs(prev => ({ ...prev, [postId]: '' }));
+        fetchPosts();
+      } else {
+        console.error("Failed to comment:", data);
+      }
+    } catch (error) {
+      console.error("Error commenting:", error);
+    }
+  };
+
   useEffect(() => {
     fetchPosts();
   }, []);
@@ -71,7 +116,7 @@ function ViewPosts({ posts, setPosts }) {
       ) : (
         <ul>
           {posts.map((post) => (
-            <li key={post.id}>
+            <li key={post.id} style={{ marginBottom: '30px' }}>
               <strong>User {post.user_id}:</strong> {post.content}
               <br />
               <small>{new Date(post.timestamp).toLocaleString()}</small>
@@ -79,8 +124,29 @@ function ViewPosts({ posts, setPosts }) {
               <em>Reposts: {post.repost_count || 0}</em>
               <br />
               <button onClick={() => handleRepost(post.id)}>Repost</button>
+              <button onClick={() => handleLike(post.id)}>Like ({post.likes || 0})</button>
               {post.user_id === 1 && post.content.startsWith("Repost from User") && (
                 <button onClick={() => handleDelete(post.id)}>Delete Repost</button>
+              )}
+
+              <div style={{ marginTop: '10px' }}>
+                <input
+                  type="text"
+                  placeholder="Add a comment"
+                  value={commentInputs[post.id] || ''}
+                  onChange={(e) => handleCommentInputChange(post.id, e.target.value)}
+                />
+                <button onClick={() => handleComment(post.id)}>Comment</button>
+              </div>
+
+              {post.comments && post.comments.length > 0 && (
+                <ul>
+                  {post.comments.map((c, idx) => (
+                    <li key={idx}>
+                      <strong>User {c.user_id}:</strong> {c.text}
+                    </li>
+                  ))}
+                </ul>
               )}
             </li>
           ))}
