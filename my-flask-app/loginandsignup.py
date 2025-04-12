@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 from postcreation import post_bp
+from config import mysql_password
 from uploadstory import uploadstory_bp
 from tkinter import * #this is for the message box
 import getpass  # Maria's changes: used for password prompt
@@ -14,7 +15,7 @@ app = Flask(__name__)
 CORS(app)  # This will allow requests from any origin
 
 # Maria's changes: Prompt for MySQL password
-mysql_password = getpass.getpass("Enter your MySQL root password: ")
+# mysql_password = getpass.getpass("Enter your MySQL root password: ")
 
 # this is to set up uploaded folder
 UPLOAD_FOLDER = './uploads'
