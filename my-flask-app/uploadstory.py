@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 import os
 import mimetypes
 
+from uploaddatabase import insert_metadata
+
 # create flask blueprint to handle story uploads
 uploadstory_bp = Blueprint('uploadstory', __name__)
 
@@ -40,6 +42,9 @@ def upload_story():
     #save the uploaded file to the specified folder
         file.save(file_path)
 
+        upload_timestamp = datetime.now()
+        expiration_time = (upload_timestamp + timedelta(hours=24)).isoformat()
+
     # create metadata for uploaded file
     # includes: upload timestamp and expiration time
         metadata = {
@@ -47,6 +52,14 @@ def upload_story():
             "uploadTimestamp": datetime.now().isoformat(),
             "expirationTime": (datetime.now() + timedelta(hours=24)).isoformat()
         }
+
+
+        try:
+            insert_metadata(filename, upload_timestamp, expiration_time)
+            print(f"Metadata inserted into database: {metadata}")
+        except Exception as db_error:
+            print(f"Error inserting metadata into database: {db_error}")
+            return jsonify({"error": "failed to save metadata to database"}), 500
 
     # debug statements to ensure file and metadata is recognized
         print("recieved file:", file.filename)
