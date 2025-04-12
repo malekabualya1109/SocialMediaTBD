@@ -118,7 +118,7 @@ function HomePage(){
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            user_id: 1,  // Replace with actual user ID if needed
+            username,  // Replace with actual user ID if needed
             content: content, 
           }),
         });
@@ -351,7 +351,7 @@ const handleSignUp = async () => {
       
               <section className="main">
               <div className = "viewPosts">
-                  <ViewPosts posts={posts} setPosts={setPosts} />
+                  <ViewPosts posts={posts} setPosts={setPosts} username={username} />
                 </div> 
                 <div>
                   <textarea class="postArea"
