@@ -7,18 +7,24 @@ DB_CONFIG = {
     "host": "localhost",
     "user": "root",
     "password": mysql_password,
-    "database": "uploads_db"
+    #"database": "uploads_db"
 }
 
 # function to establish a connection to the database
-def connect_db():
-    return pymysql.connect(**DB_CONFIG, cursorclass=pymysql.cursors.DictCursor)
+def connect_db(use_database=True):
+    """Connect to MySQL. If `use_database` is False, don't include the database in the connection."""
+    config = DB_CONFIG.copy()
+    if use_database:
+        config["database"] = "uploads_db"
+    print(f"Connecting to DB with config: {config}")
+
+    return pymysql.connect(**config, cursorclass=pymysql.cursors.DictCursor)
 
 # function to create or verify the admin user
 def admin():
     try:
         # connect to mySql without specifying a database
-        connection = pymysql.connect(host='localhost', user='root', password=mysql_pass)
+        connection = pymysql.connect(host='localhost', user='root', password=mysql_password)
         cursor = connection.cursor()
 
         # check if the admin user exists in the mysql system database
@@ -41,7 +47,7 @@ def admin():
 
 # function to initialize the database and create necessary tables if they do not exist
 def init_db():
-    conn=connect_db()
+    conn=connect_db(use_database=False)
     with conn.cursor() as cursor:
         # create database if it does not exist
         cursor.execute("CREATE database IF NOT EXISTS uploads_db")
@@ -62,22 +68,22 @@ def init_db():
 # function to insert metadata of an uploaded file into database
 def insert_metadata(filename, upload_timestamp, expiration_time):
     conn = connect_db()
-    with conn.cursor() as cursor:
-        # SQL query to insert metadata into uploads table
-        sql_InsertMeta = """
-        INSERT INTO uploads (filename, upload_timestamp, expiration_time)
-        VALUES (%s, %s, %s)
-        """
-        values = (filename, upload_timestamp, expiration_time)
-
-        try:
-            cursor.execute(sql_InsertMeta, values) # execute the insert query
+    try:
+        with conn.cursor() as cursor:
+            sql_insert_meta = """
+            INSERT INTO uploads (filename, upload_timestamp, expiration_time)
+            VALUES (%s, %s, %s)
+            """
+            values = (filename, upload_timestamp, expiration_time)
+            print(f"Attempting to insert: {values}")  # Debugging
+            cursor.execute(sql_insert_meta, values)  # Execute the insert query
             conn.commit()
-            print(f"Inserted: {values}") # debugging
-        except Exception as e:
-            print(f"Error inserting data: {e}")
-            conn.rollback() # in case of failure
-    conn.close() # close database connection
+            print(f"Inserted: {values}")  # Debugging
+    except Exception as e:
+        print(f"Error inserting data: {e}")
+        conn.rollback()  # In case of failure
+    finally:
+        conn.close()
 
 # initialize the database when script runs
 init_db()
