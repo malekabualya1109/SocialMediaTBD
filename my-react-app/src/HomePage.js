@@ -189,7 +189,7 @@ const handleSignUp = async () => {
     if (response.ok) {
       setIsAuthenticated(true);
       // Store authentication info as needed
-      localStorage.setItem('isAuthenticated', true);
+      localStorage.setItem('isAuthenticated', false);
       localStorage.setItem('username', username);
       
       // Navigate to the interests page and pass the user ID
@@ -239,8 +239,7 @@ const handleSignUp = async () => {
                       Settings
                       {isDropdownVisible && (
                         <ul className="setting-menu">
-                          <li>Change Password</li>
-                          <li>Update Username</li>
+                          <li><Link to="/settings">Edit Account</Link></li>
                           <button onClick={handleLogout}>Logout</button>
                         </ul>
                       )}
