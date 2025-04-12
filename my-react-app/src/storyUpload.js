@@ -33,6 +33,12 @@ function StoryUpload() {
 
     /* function to handle file upload to the server */
     const handleUpload = async () => {
+
+        console.log('Upload button clicked!');
+        if (!file) {
+        console.error("No file selected.");
+        return;
+    }
         if(!file) {
             console.error("no file selected.");
             return;
@@ -51,13 +57,15 @@ function StoryUpload() {
                     setProgress(percent); // update the progress state
                 }
             });
+
+            console.log('Upload Successful:', response.data); // log success response
             
+            navigate('/')
+            console.log('navigated to homepage')
             setUploadedStories((prevStories) => [
                 ...prevStories,
                 response.data.metadata,
             ]);
-            console.log('Upload Successful:', response.data); // log success response
-            navigate('/')
         } catch (error){
             console.error('Upload Failed:', error); //upload fails
         }
