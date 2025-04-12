@@ -5,7 +5,8 @@ import Picker from "@emoji-mart/react"; // Emoji picker component
 import data from "@emoji-mart/data"; // Emoji data
 import { format } from "timeago.js"; // Format timestamps into "time ago" strings
 
-function DailyForum({ username }) {
+function DailyForum() {
+  const username = localStorage.getItem("username");
   const [comment, setComment] = useState(""); // New comment text
   const [comments, setComments] = useState([]); // List of all comments
   const [showEmojiPicker, setShowEmojiPicker] = useState(false); // Emoji picker visibility
@@ -93,6 +94,37 @@ function DailyForum({ username }) {
     setShowEmojiPicker(false);
   };
 
+  const renderReplies = (replies, parentUsername) => {
+    return replies.map((reply, idx) => (
+      <div key={idx} className="reply-box" style={{ marginLeft: "20px" }}>
+        <p>
+          <strong>{reply.username}</strong> replying to{" "}
+          <strong>{reply.replyingTo}</strong> - {format(reply.timestamp)}
+        </p>
+        <p>{reply.text}</p>
+  
+        <button className="reply-button" onClick={() => setReplyingTo(reply.timestamp)}>
+          Reply
+        </button>
+  
+        {replyingTo === reply.timestamp && (
+          <div className="reply-input">
+            <input
+              type="text"
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+              placeholder="Type your reply..."
+            />
+            <button onClick={() => replyComment(reply.timestamp, replyText)}>Send Reply</button>
+          </div>
+        )}
+  
+        {reply.replies && reply.replies.length > 0 && renderReplies(reply.replies, reply.username)}
+      </div>
+    ));
+  };
+  
+
   return (
     <>
       <div className="container">
@@ -126,19 +158,8 @@ function DailyForum({ username }) {
                   </div>
                 )}
   
-                {cmt.replies && cmt.replies.length > 0 && (
-                  <div className="replies">
-                    {cmt.replies.map((reply, idx) => (
-                      <div key={idx} className="reply-box">
-                        <p>
-                          <strong>{reply.username}</strong> replying to{" "}
-                          <strong>{cmt.username}</strong> - {format(reply.timestamp)}
-                        </p>
-                        <p>{reply.text}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                  {cmt.replies && cmt.replies.length > 0 && renderReplies(cmt.replies, cmt.username)}
+
               </div>
             ))
           ) : (

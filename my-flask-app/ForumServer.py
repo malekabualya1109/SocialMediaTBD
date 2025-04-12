@@ -15,7 +15,7 @@ def clean_old_comments():
     now = datetime.now()
     comments = [
         c for c in comments
-        if datetime.strptime(c["timestamp"], "%Y-%m-%d %H:%M:%S") > now - timedelta(minutes=1)
+        if datetime.strptime(c["timestamp"], "%Y-%m-%d %H:%M:%S") > now - timedelta(minutes=15)
     ]
     print(f"[Cleaner] Remaining comments: {len(comments)}")
     Timer(60, clean_old_comments).start()
@@ -59,6 +59,17 @@ def like_comment():
 
     return jsonify({"error": "Comment not found"}), 404
 
+
+def find_comment_by_timestamp(comments_list, timestamp):
+    for comment in comments_list:
+        if comment["timestamp"] == timestamp:
+            return comment
+        # Search recursively in replies
+        result = find_comment_by_timestamp(comment.get("replies", []), timestamp)
+        if result:
+            return result
+    return None
+
 # Reply to a comment
 @app.route('/comments/reply', methods=['POST'])
 def reply_to_comment():
@@ -70,20 +81,23 @@ def reply_to_comment():
     if not text or not username:
         return jsonify({"error": "Username and reply text are required"}), 400
 
-    for comment in comments:
-        if comment["timestamp"] == timestamp:
-            reply = {
-                "username": username,
-                "text": text,
-                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "replyingTo": comment["username"]  
-            }
-            if "replies" not in comment:
-                comment["replies"] = []
-            comment["replies"].append(reply)
-            return jsonify({"message": "Reply posted"}), 201
+    target_comment = find_comment_by_timestamp (comments, timestamp)
 
-    return jsonify({"error": "Original comment not found"}), 404
+    if target_comment:
+        reply = {
+            "username": username,
+            "text": text,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "replyingTo": target_comment["username"],
+            "replies": []  # allow nested replies
+        }
+        if "replies" not in target_comment:
+            target_comment["replies"] = []
+        target_comment["replies"].append(reply)
+        return jsonify({"message": "Reply posted"}), 201
+
+    return jsonify({"error": "Comment or reply not found"}), 404
+
 
 # Start background cleaner
 clean_old_comments()
