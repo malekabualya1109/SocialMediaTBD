@@ -11,12 +11,13 @@ posts = []
 @post_bp.route('/api/posts', methods=['POST'])
 def create_post():
     data = request.json
-    if not data or not data.get('user_id') or not data.get('content'):
+
+    if not data or not data.get("username") or not data.get('content'):
         return jsonify({'error': 'Invalid input'}), 400
 
     new_post = {
         'id': len(posts) + 1,
-        'user_id': data['user_id'],
+        'username': data['username'],
         'content': data['content'].strip(),
         'timestamp': datetime.utcnow().isoformat(),
         'repost_count': 0,
@@ -39,7 +40,8 @@ def get_posts():
 @post_bp.route('/api/repost', methods=['POST'])
 def repost():
     data = request.json
-    if not data or not data.get('user_id') or not data.get('original_post_id'):
+
+    if not data or not data.get("username") or not data.get('original_post_id'):
         return jsonify({'error': 'Invalid input'}), 400
 
     original_post = next((p for p in posts if p['id'] == data['original_post_id']), None)
@@ -49,10 +51,10 @@ def repost():
 
     original_post['repost_count'] = original_post.get('repost_count', 0) + 1
 
-    repost_content = f"Repost from User {original_post['user_id']}: {original_post['content']}"
+    repost_content = f"Repost from User {original_post['username']}: {original_post['content']}"
     new_post = {
         'id': len(posts) + 1,
-        'user_id': data['user_id'],
+        'username': data['username'],
         'content': repost_content,
         'timestamp': datetime.utcnow().isoformat(),
         'repost_count': 0,
@@ -80,7 +82,7 @@ def delete_post(post_id):
         original_content = ":".join(post_to_delete['content'].split(":")[1:]).strip()
 
         original_post = next(
-            (p for p in posts if p['user_id'] == int(original_user_id) and p['content'] == original_content),
+            (p for p in posts if p['username'] == int(original_user_id) and p['content'] == original_content),
             None
         )
 
@@ -111,7 +113,7 @@ def like_post(post_id):
 @post_bp.route('/api/posts/<int:post_id>/comment', methods=['POST'])
 def comment_post(post_id):
     data = request.json
-    if not data or not data.get('user_id') or not data.get('text'):
+    if not data or not data.get('username') or not data.get('text'):
         return jsonify({'error': 'Invalid comment input'}), 400
 
     post = next((p for p in posts if p['id'] == post_id), None)
@@ -119,7 +121,7 @@ def comment_post(post_id):
         return jsonify({'error': 'Post not found'}), 404
 
     comment = {
-        'user_id': data['user_id'],
+        'username': data['username'],
         'text': data['text'],
         'timestamp': datetime.utcnow().isoformat()
     }

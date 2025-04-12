@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
-function ViewPosts({ posts, setPosts }) {
+
+function ViewPosts({ posts, setPosts, username }) {
   const [commentInputs, setCommentInputs] = useState({});
+  
+
 
   const fetchPosts = async () => {
     try {
@@ -25,7 +28,7 @@ function ViewPosts({ posts, setPosts }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user_id: 1, // Replace with actual user ID
+          username: username, // Replace with actual user ID
           original_post_id: originalPostId,
         }),
       });
@@ -89,7 +92,7 @@ function ViewPosts({ posts, setPosts }) {
       const response = await fetch(`http://127.0.0.1:5000/api/posts/${postId}/comment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id: 1, text: commentText }), // Replace with dynamic user_id
+        body: JSON.stringify({username, text: commentText }), // Replace with dynamic user_id
       });
 
       const data = await response.json();
@@ -117,7 +120,7 @@ function ViewPosts({ posts, setPosts }) {
         <ul>
           {posts.map((post) => (
             <li key={post.id} style={{ marginBottom: '30px' }}>
-              <strong>User {post.user_id}:</strong> {post.content}
+              <strong>{post.username}:</strong> {post.content}
               <br />
               <small>{new Date(post.timestamp).toLocaleString()}</small>
               <br />
@@ -143,7 +146,7 @@ function ViewPosts({ posts, setPosts }) {
                 <ul>
                   {post.comments.map((c, idx) => (
                     <li key={idx}>
-                      <strong>User {c.user_id}:</strong> {c.text}
+                      <strong>{c.username}:</strong> {c.text}
                     </li>
                   ))}
                 </ul>
