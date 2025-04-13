@@ -1,0 +1,25 @@
+/*Emma's Setting CSS Code*/
+.Setting-Page{
+    margin-top: 6rem;
+    display: flex; 
+    flex-direction: column; 
+    background-color:rgb(101, 11, 52);
+    padding: 4rem; 
+    padding-right: 7rem;
+    padding-left: 7rem; 
+    justify-content: center;
+    gap: .3rem; 
+    border-radius: 40px; 
+    box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.6), -4px -4px 10px rgba(255, 0, 0, 0.4);
+}
+
+.buttons{
+    background-color: rgb(255, 192, 220);
+    padding: 2rem;
+    padding-top: 3rem;
+    padding-bottom: 3rem; 
+    width: 18rem;
+    border-radius: 35px; 
+    border: .2rem solid rgb(53, 2, 25); 
+    font-size: 1.2rem;
+}
