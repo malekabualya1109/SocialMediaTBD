@@ -129,7 +129,13 @@ function DailyForum() {
     <>
       <div className="container">
         <img src="/dailyforumbanner.png" alt="Daily Forum Banner" className="banner-image" />
-  
+        {/* Back to Homepage link */}
+        <div style={{ backgroundColor: "#f2f2f2", padding: "10px" }}>
+          <a href="/" style={{ color: "#4B001f", fontWeight: "bold", textDecoration: "none" }}>
+            ← Back to Homepage
+          </a>
+        </div>
+        
         <div className="comments-section">
           {comments.length > 0 ? (
             comments.map((cmt, index) => (
