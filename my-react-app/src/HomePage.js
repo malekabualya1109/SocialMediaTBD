@@ -283,11 +283,11 @@ const handleSignUp = async () => {
                 </header>
 
                 {/*Bot's link*/}
-                <header className = "bot-forum">
-                  <div className = "botForum-link">
-                    <Link to="/bot-forum">Chat Forum</Link>
-                  </div>
-                </header>
+                // <header className = "bot-forum">
+                //   <div className = "botForum-link">
+                //     <Link to="/bot-forum">Chat Forum</Link>
+                //   </div>
+                // </header>
           
               </section>
   
