@@ -7,7 +7,9 @@ import UserProfile from "./userProfile.js";
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import StoryUpload from './storyUpload.js';
 import DailyForum from './dailyForum.js';
+import ChatAi from './chatAi.js';
 import SettingsPage from './SettingsPage.js'; 
+
 
 /* for Bot */
 import BotForum from './botFront.js'; // Import the bot forum component
@@ -62,6 +64,7 @@ function App() {
         <Route path="/settings" element={<SettingsPage username={username} isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} setUsername={setUsername} password = {password} />} />
         <Route path="/daily-forum" element={<DailyForum username={"User"} />} />
         <Route path="/bot-forum" element={<BotForum username={"User"} />} /> 
+        <Route path="/chat-ai" element={<ChatAi username={"User"} />} />
       </Routes>
     </Router>
   ); 
