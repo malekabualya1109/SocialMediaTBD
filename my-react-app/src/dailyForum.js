@@ -18,10 +18,14 @@ function DailyForum() {
     try {
       const response = await axios.get("http://localhost:8080/comments");
       setComments(response.data.reverse()); // Show newest first
-    } catch (error) {
-      console.error("Error loading comments", error);
-    }
-  };
+      console.log("Loaded comments:", response.data);
+      console.log("One profilePic:", response.data[0]?.profilePic);
+
+  } catch (error) {
+    console.error("Error loading comments", error);
+  }
+};
+    
 
   useEffect(() => {
     // Auto-refresh comments every 5 seconds
@@ -34,7 +38,12 @@ function DailyForum() {
     // Post new comment to server
     if (comment.trim()) {
       try {
-        const requestBody = { username, text: comment };
+        const requestBody = {
+          username,
+          text: comment,
+          profilePic: localStorage.getItem("profilePic") || ""
+        };
+        console.log("Sending comment with profilePic:", requestBody);
         const response = await axios.post("http://localhost:8080/comments", requestBody, {
           headers: { "Content-Type": "application/json" },
         });
@@ -72,13 +81,21 @@ function DailyForum() {
   const replyComment = async (timestamp, replyText) => {
     // Submit reply to a comment
     if (!replyText.trim()) return;
+    console.log("Sending reply with profilePic:", {
+      timestamp,
+      text: replyText,
+      username,
+      profilePic: localStorage.getItem("profilePic")
+    });
 
     try {
       const response = await axios.post("http://localhost:8080/comments/reply", {
         timestamp,
         text: replyText,
         username,
+        profilePic: localStorage.getItem("profilePic") || ""
       });
+      
 
       setReplyingTo(null); // Close reply input
       setReplyText(""); // Clear reply input
@@ -97,13 +114,26 @@ function DailyForum() {
   const renderReplies = (replies, parentUsername) => {
     return replies.map((reply, idx) => (
       <div key={idx} className="reply-box" style={{ marginLeft: "20px" }}>
-        <p>
-          <strong>{reply.username}</strong> replying to{" "}
-          <strong>{reply.replyingTo}</strong> - {format(reply.timestamp)}
-        </p>
+        <div className="profile-header">
+          <img
+            src={reply.profilePic || "/default-avatar.png"}
+            alt="Profile"
+            className="profile-pic"
+          />
+          <div className="profile-meta">
+            <a href={`/profile/${reply.username}`} className="username-link">
+              <strong>{reply.username}</strong>
+            </a>
+            <span className="timestamp">replying to - {format(reply.timestamp)}</span>
+          </div>
+        </div>
+  
         <p>{reply.text}</p>
   
-        <button className="reply-button" onClick={() => setReplyingTo(reply.timestamp)}>
+        <button
+          className="reply-button"
+          onClick={() => setReplyingTo(reply.timestamp)}
+        >
           Reply
         </button>
   
@@ -115,34 +145,45 @@ function DailyForum() {
               onChange={(e) => setReplyText(e.target.value)}
               placeholder="Type your reply..."
             />
-            <button onClick={() => replyComment(reply.timestamp, replyText)}>Send Reply</button>
+            <button onClick={() => replyComment(reply.timestamp, replyText)}>
+              Send Reply
+            </button>
           </div>
         )}
   
-        {reply.replies && reply.replies.length > 0 && renderReplies(reply.replies, reply.username)}
+        {reply.replies && reply.replies.length > 0 &&
+          renderReplies(reply.replies, reply.username)}
       </div>
     ));
   };
   
-
   return (
     <>
       <div className="container">
         <img src="/dailyforumbanner.png" alt="Daily Forum Banner" className="banner-image" />
-        {/* Back to Homepage link */}
+  
         <div style={{ backgroundColor: "#f2f2f2", padding: "10px" }}>
           <a href="/" style={{ color: "#4B001f", fontWeight: "bold", textDecoration: "none" }}>
             ← Back to Homepage
           </a>
         </div>
-        
+  
         <div className="comments-section">
           {comments.length > 0 ? (
             comments.map((cmt, index) => (
               <div key={index} className="comment-box">
-                <p>
-                  <strong>{cmt.username}</strong> - {format(cmt.timestamp)}
-                </p>
+                <div className="profile-header">
+                  <img
+                    src={cmt.profilePic || "/default-avatar.png"}
+                    alt="Profile"
+                    className="profile-pic"
+                  />
+                  <a href={`/profile/${cmt.username}`} className="username-link">
+                    <strong>{cmt.username}</strong>
+                  </a>
+                  <span style={{ marginLeft: "8px", color: "#888" }}>{format(cmt.timestamp)}</span>
+                </div>
+  
                 <p>{cmt.text}</p>
   
                 <button className="like-button" onClick={() => likeComment(cmt.timestamp)}>
@@ -164,8 +205,7 @@ function DailyForum() {
                   </div>
                 )}
   
-                  {cmt.replies && cmt.replies.length > 0 && renderReplies(cmt.replies, cmt.username)}
-
+                {cmt.replies && cmt.replies.length > 0 && renderReplies(cmt.replies, cmt.username)}
               </div>
             ))
           ) : (
@@ -183,8 +223,15 @@ function DailyForum() {
               placeholder="Type your comment"
               className="input-bar"
             />
-            <button onClick={postComment} className="icon-button send">Send</button>
-            <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="icon-button emoji">😄</button>
+            <button onClick={postComment} className="icon-button send">
+              Send
+            </button>
+            <button
+              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+              className="icon-button emoji"
+            >
+              😄
+            </button>
           </div>
   
           {showEmojiPicker && (
@@ -196,6 +243,7 @@ function DailyForum() {
       </div>
     </>
   );
+
 }
   
 export default DailyForum; 

@@ -222,6 +222,29 @@ def set_interests():
     except:
         return jsonify({"error": "Could not connect to database"}), 500
     
+#New for Profile (By Maria)
+@app.route('/api/profile/<username>', methods=['GET'])
+def get_profile(username):
+    try:
+        theSQL = pymysql.connect(host='localhost', user='root', password=mysql_password, database='userdata')
+        mycursor = theSQL.cursor()
+
+        # Get user info
+        query = 'SELECT id, username FROM data WHERE username = %s'
+        mycursor.execute(query, (username,))
+        user = mycursor.fetchone()
+
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        return jsonify({
+            "id": user[0],
+            "username": user[1],
+
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 

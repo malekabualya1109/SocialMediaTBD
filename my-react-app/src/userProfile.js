@@ -1,10 +1,16 @@
 import './user-profile.css';
 import './App.css';
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+
 
 function UserProfile() {
   const [profilePic, setProfilePic] = useState(null);
   const [backgroundImage, setBackgroundImage] = useState(false);
+  const { username } = useParams();
+
+
+
 
   useEffect(()=>{
     const savedProfilePic = localStorage.getItem("profilePic");
@@ -41,15 +47,19 @@ function UserProfile() {
       reader.readAsDataURL(file);
     }
   };
-  
+  //Small changes to make the profile picture behave the same as the background picture
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setProfilePic(imageUrl);
-      localStorage.setItem("profilePic", imageUrl); 
-    }
-  };
+      const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result; 
+      setProfilePic(base64String);
+      localStorage.setItem("profilePic", base64String);
+    };
+    reader.readAsDataURL(file);
+  }
+};
 
   return (
     <div className="UserProfile">
@@ -101,7 +111,7 @@ function UserProfile() {
     </div>
   )}
 
-  <h1 className="userProf">Your Profile</h1>
+  <h1 className="userProf">{username ? `${username}'s Profile` : "Your Profile"}</h1>
 </section>
 
 
