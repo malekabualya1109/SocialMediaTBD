@@ -146,6 +146,40 @@ html {
   border-radius: 6px;
 }
 
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.profile-pic {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.profile-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+.username-link {
+  text-decoration: none;
+  color: #4B001f;
+  font-weight: bold;
+}
+
+.timestamp {
+  font-size: 0.85rem;
+  color: #888;
+}
+
+
 /* Emoji Picker */
 .emoji-picker {
   position: absolute;

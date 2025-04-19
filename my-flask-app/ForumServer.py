@@ -49,6 +49,14 @@ class CommentStore:
             if found:
                 return found
         return None
+    
+    def like_by_timestamp(self, timestamp):
+        target = self.find_by_timestamp(timestamp)
+        if target:
+            target["likes"] += 1
+            return target["likes"]
+        return None
+
 
 # Create single store instance
 store = CommentStore()
@@ -64,6 +72,13 @@ def post_comment():
     data = request.json
     username = data.get("username", "").strip()
     text = data.get("text", "").strip()
+    profile_pic = data.get("profilePic", "")
+
+    print("[Storing comment]", {
+        "username": username,
+        "text": text,
+        "profilePic": profile_pic
+    })
 
     if not username or not text:
         return jsonify({"error": "Username and comment cannot be empty"}), 400
@@ -71,6 +86,7 @@ def post_comment():
     new_comment = {
         "username": username,
         "text": text,
+        "profilePic": profile_pic,
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "likes": 0,
         "replies": []
@@ -83,6 +99,7 @@ def post_comment():
 def get_comments():
     return jsonify(store.get_all())
 
+
 @app.route('/comments/like', methods=['POST'])
 def like_comment():
     data = request.json
@@ -91,6 +108,9 @@ def like_comment():
     if likes is not None:
         return jsonify({"message": "Comment liked!", "likes": likes}), 200
     return jsonify({"error": "Comment not found"}), 404
+
+
+
 
 @app.route('/comments/reply', methods=['POST'])
 def reply_to_comment():
@@ -102,9 +122,11 @@ def reply_to_comment():
     if not text or not username:
         return jsonify({"error": "Username and reply text are required"}), 400
 
+    profile_pic = data.get("profilePic", "")
     reply = {
         "username": username,
         "text": text,
+        "profilePic": profile_pic,
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "replyingTo": "",
         "replies": []

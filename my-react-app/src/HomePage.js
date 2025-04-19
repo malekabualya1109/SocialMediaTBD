@@ -233,7 +233,11 @@ const handleSignUp = async () => {
               <div className = "navigationHeader">
                 <ul>
                   <li>Notifications</li>
-                  <li><Link to="/profile">User Profile</Link></li>
+                  <li>
+                    <Link to={`/profile/${username}`}>
+                      User Profile
+                    </Link>
+                  </li>
                   <li>
                     <div className="setting" onClick={toggleDropdown}>
                       Settings
@@ -281,29 +285,12 @@ const handleSignUp = async () => {
                     <Link to="/daily-forum">Daily Forum</Link>
                   </div>
                 </header>
-
-                {/*Bot's link*/}
-
-                <header className = "bot-forum">
-                  <div className = "botForum-link">
-                    <Link to="/bot-forum">Chat Forum</Link>
-                  </div>
-                </header>
                 {/*Chat Ai link*/}
                 <header className="chat-ai">
                   <div className="chatAi-link">
                     <Link to="/chat-ai">Chat with Ai</Link>
                   </div>
                 </header>
-
-
-                // <header className = "bot-forum">
-                //   <div className = "botForum-link">
-                //     <Link to="/bot-forum">Chat Forum</Link>
-                //   </div>
-                // </header>
-          
-
               </section>
   
               <section className="friendbar">
