@@ -42,6 +42,7 @@ def post_message():
     data = request.json
     username = data.get("username", "").strip()
     text = data.get("text", "").strip()
+    profile_pic = data.get("profilePic", "").strip()
 
     if not username or not text:
         return jsonify({"error": "Username and message cannot be empty"}), 400
@@ -49,15 +50,19 @@ def post_message():
     new_message = {
         "username": username,
         "text": text,
+        "profilePic": profile_pic,
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "replies": []
     }
+
+    print("[POST /chat] Received:", new_message)  # Debug print to verify profilePic
 
     chat_store.add_message(new_message)
     return jsonify({
         "message": "Message posted successfully!",
         "timestamp": new_message["timestamp"]
     }), 201
+
 
 # Route to get all chat messages
 @app.route('/chat', methods=['GET'])

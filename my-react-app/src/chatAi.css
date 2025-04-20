@@ -68,6 +68,19 @@ body {
     background-color: #fff;
     border-left: 5px solid #999;
   }
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  
+  .profile-pic {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
   
   .comment-box p:first-child {
     margin: 0;
