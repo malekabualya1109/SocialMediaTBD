@@ -8,6 +8,7 @@ import { format } from "timeago.js";
 function ChatAi() {
   const API_BASE = "http://localhost:8081";
   const username = localStorage.getItem("username");
+  const profilePic = localStorage.getItem("profilePic");
 
   // State for the input message, loaded messages, and emoji picker visibility
   const [message, setMessage] = useState("");
@@ -55,7 +56,7 @@ function ChatAi() {
   const sendMessage = async () => {
     if (message.trim()) {
       try {
-        const requestBody = { username, text: message };
+        const requestBody = { username, text: message, profilePic: profilePic || "" };
         const response = await axios.post(`${API_BASE}/chat`, requestBody, {
           headers: { "Content-Type": "application/json" },
         });
@@ -123,13 +124,17 @@ function ChatAi() {
         {getAllMessages(chatMessages).map((msg, index) => {
           const isUser = msg.username === username;
           return (
-            <div
-              key={index}
-              className={`comment-box ${isUser ? "user" : "other"}`}
-            >
-              <p>
-                <strong>{msg.username}</strong> • {format(msg.timestamp)}
-              </p>
+            <div key={index} className={`comment-box ${isUser ? "user" : "other"}`}>
+              <div className="profile-header">
+                <img
+                  src={msg.profilePic || "/default-avatar.png"}
+                  alt="Profile"
+                  className="profile-pic"
+                />
+                <div>
+                  <strong>{msg.username}</strong> • {format(msg.timestamp)}
+                </div>
+              </div>
               <p>{msg.text}</p>
             </div>
           );
