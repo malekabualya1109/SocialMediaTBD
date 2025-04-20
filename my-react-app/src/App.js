@@ -9,6 +9,9 @@ import StoryUpload from './storyUpload.js';
 import DailyForum from './dailyForum.js';
 import ChatAi from './chatAi.js';
 import SettingsPage from './SettingsPage.js'; 
+import DirectMessage from "./directMessage";
+
+
 
 
 /* for Bot */
@@ -65,6 +68,9 @@ function App() {
         <Route path="/daily-forum" element={<DailyForum username={"User"} />} />
         <Route path="/bot-forum" element={<BotForum username={"User"} />} /> 
         <Route path="/chat-ai" element={<ChatAi username={"User"} />} />
+        <Route path="/direct/:username" element={<DirectMessage />} />
+
+
       </Routes>
     </Router>
   ); 
