@@ -7,12 +7,15 @@ import './smallerPage.css';
 import './user-profile.css';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import Interest from './Interest';
 
 function HomePage(){
     const [message, setMessage] = useState('');
     const [content, setContent] = useState('');
     const [postMessage, setPostMessage] = useState('');
-    const [posts, setPosts] = useState([]);  
+    const [posts, setPosts] = useState([]); 
+
+ 
   
     // Fatimah: variables for users 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -29,12 +32,36 @@ function HomePage(){
     const [showInterestsPrompt, setShowInterestsPrompt] = useState(false);
   
     //Fatimah:user id for the interest
-    const[userId, setUserId] = useState(false);
+    const[userId, setUserId] = useState(null); // nul or false
 
     //mona: to upload image
     const [uploadedStories, setUploadedStories] = useState([]);
 
     const navigate = useNavigate();
+
+    const [profilePic, setProfilePic] = useState(null);
+  const [selectedStory, setSelectedStory] = useState(null); // <-- for popup
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+    //mona
+    useEffect(() => {
+      const savedProfilePic = localStorage.getItem("profilePic");
+      if (savedProfilePic) {
+        setProfilePic(savedProfilePic);
+      }
+    }, []);
+
+    //mona
+    const handleStoryClick = (story) => {
+      setSelectedStory(story);
+      setIsModalOpen(true);
+    };
+
+    //mona
+    const closeModal = () => {
+      setIsModalOpen(false);
+      setSelectedStory(null);
+    };
 
     //mona: fetching stories
     useEffect(() => {
@@ -188,12 +215,15 @@ const handleSignUp = async () => {
 
     if (response.ok) {
       setIsAuthenticated(true);
+      setUserId(data.user_id);
+      setShowInterestsPrompt(true);
+
       // Store authentication info as needed
-      localStorage.setItem('isAuthenticated', true);
-      localStorage.setItem('username', username);
+      // localStorage.setItem('isAuthenticated', false);
+      // localStorage.setItem('username', username);
       
       // Navigate to the interests page and pass the user ID
-      navigate('/interests', { state: { userId: data.user_id } });
+      // navigate('/interests', { state: { userId: data.user_id } });
     } else {
       setAuthMessage(data.error || 'Signup failed.');
     }
@@ -201,8 +231,6 @@ const handleSignUp = async () => {
     setAuthMessage('Error connecting to server');
   }
 };
-
-
     
     /*Emma */
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -221,7 +249,6 @@ const handleSignUp = async () => {
             <h1>Welcome to Tea Talks</h1>
           </header>
       )}
-          
       
           {isAuthenticated && (
             <>
@@ -233,14 +260,17 @@ const handleSignUp = async () => {
               <div className = "navigationHeader">
                 <ul>
                   <li>Notifications</li>
-                  <li><Link to="/profile">User Profile</Link></li>
+                  <li>
+                    <Link to={`/profile/${username}`}>
+                      User Profile
+                    </Link>
+                  </li>
                   <li>
                     <div className="setting" onClick={toggleDropdown}>
                       Settings
                       {isDropdownVisible && (
                         <ul className="setting-menu">
-                          <li>Change Password</li>
-                          <li>Update Username</li>
+                          <li><Link to="/settings">Edit Account</Link></li>
                           <button onClick={handleLogout}>Logout</button>
                         </ul>
                       )}
@@ -260,21 +290,61 @@ const handleSignUp = async () => {
                 
                 {/* Shoe uploaded story circles */}
                 <div className="storyContainer">
-                  {uploadedStories.length > 0 && (
+                    {uploadedStories.length > 0 && (
                     <div style={{ display: 'flex', overflowX: 'scroll', padding: '10px' }}>
-                      {uploadedStories.map((story, index) => (
-                        <div key= { index } className="storyCircle">
-                          <img
-                            src={`http://localhost:5000/uploads/${story.filename}`}
-                            alt={`Story ${index}`}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            onError={(e) => console.log("Image load error: ", e.target.src)}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                    {uploadedStories.map((story, index) => (
+                      <div
+                        key={index}
+                        className="storyCircle"
+                        onClick={() => handleStoryClick(story)}
+                        style={{ cursor: "pointer" }}
+                      >
+             {profilePic && (
+                  <img
+                    src={profilePic}
+                    alt="User Profile"
+                    className="miniProfilePic"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: '50%',
+                      marginBottom: '5px',
+                    }}
+                  />
+                )}
+
+              </div>
+            ))}
+          </div>
+          )}
+        </div>
+        {/* Modal for showing story */}
+        {isModalOpen && selectedStory && (
+  <div className="modalOverlay" onClick={closeModal}>
+    <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+      {/* Detect and render image or video */}
+      {selectedStory.filename.match(/\.(mp4|webm|ogg)$/i) ? (
+        <video
+          controls
+          autoPlay
+          style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: '8px' }}
+        >
+          <source src={`http://localhost:5000/uploads/${selectedStory.filename}`} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      ) : (
+        <img
+          src={`http://localhost:5000/uploads/${selectedStory.filename}`}
+          alt="Story Content"
+          style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: '8px' }}
+        />
+      )}
+
+      <button onClick={closeModal} className="closeButton">Close</button>
+    </div>
+  </div>
+)}
+
                 
                 {/*Maria's link*/}
                 <header className = "daily-forum">
@@ -282,14 +352,12 @@ const handleSignUp = async () => {
                     <Link to="/daily-forum">Daily Forum</Link>
                   </div>
                 </header>
-
-                {/*Bot's link*/}
-                <header className = "bot-forum">
-                  <div className = "botForum-link">
-                    <Link to="/bot-forum">Chat Forum</Link>
+                {/*Chat Ai link*/}
+                <header className="chat-ai">
+                  <div className="chatAi-link">
+                    <Link to="/chat-ai">Chat with Ai</Link>
                   </div>
                 </header>
-          
               </section>
   
               <section className="friendbar">
@@ -371,6 +439,8 @@ const handleSignUp = async () => {
   {/* This interest prompt only shows if someone signs up */}
 
                 {/* View Posts (FR2) (Malek) */}
+
+
   
   
           {/* This interest prompt only shows if someone signs up */}
@@ -379,6 +449,18 @@ const handleSignUp = async () => {
               </section>
             </div>
           )}
+        {/* Interest modal */}
+      {isAuthenticated && showInterestsPrompt && userId && (
+        <Interest
+          userId={userId}
+          onClose={() => setShowInterestsPrompt(false)}
+          onSave={() => {
+            // parent handles “after save” behavior:
+            setShowInterestsPrompt(false);
+            navigate('/');
+          }}
+        />
+      )}
         </div> 
       );
     }
