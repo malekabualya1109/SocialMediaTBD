@@ -418,18 +418,26 @@ const handleSignUp = async () => {
             <div className="content-wrapper">
       
               <section className="main">
-              <div className = "viewPosts">
-                  <ViewPosts posts={posts} setPosts={setPosts} username={username} />
-                </div> 
-                <div>
-                  <textarea class="postArea"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)} 
-                    placeholder="Write your post..."
-                  />
-                  <button class="postButton" onClick={handlePost}>Post</button>
-                  <p>{postMessage}</p>
-                </div>
+
+  {/* MALEK: post box goes above the recent posts */}
+  <div className="postContainer">
+    <textarea
+      className="postArea"
+      value={content}
+      onChange={(e) => setContent(e.target.value)}
+      placeholder="What's on your mind?"
+    />
+    <button className="postButton" onClick={handlePost}>Post</button>
+    <p>{postMessage}</p>
+  </div>
+
+  {/* View Posts (FR2) (Malek) */}
+  <div className="viewPosts">
+    <ViewPosts posts={posts} setPosts={setPosts} username={username} />
+  </div>
+
+  {/* This interest prompt only shows if someone signs up */}
+
                 {/* View Posts (FR2) (Malek) */}
 
 

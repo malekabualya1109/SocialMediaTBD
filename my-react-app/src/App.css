@@ -121,10 +121,93 @@ header, .sidebar, .footer, .friendbar, .main{
   width: 62rem;
   margin: 0rem;
   padding: 0rem;
+  overflow: hidden;
 }
 
 /*Story margin, part of the sidebar*/
 .storySection {
   margin-bottom: 2rem;
   margin: 0;
+}
+
+/* Post input container at the top of .main */
+.postContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 0rem;
+}
+
+/* Post input box */
+.postArea {
+  width: 80%;
+  max-width: 800px;
+  height: 80px;
+  padding: 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  resize: none;
+  margin-bottom: 0.5rem;
+}
+
+/* Post button */
+.postButton {
+  padding: 0.5rem 1.5rem;
+  background-color: #f9c72c;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  color: black;
+}
+
+.postButton:hover {
+  background-color: #d4a719;
+}
+
+.postsGrid {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  gap: 2rem;
+  padding: 1rem;
+  max-height: 600px;
+  scroll-snap-type: x mandatory;
+}
+
+.postsGridColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 260px;
+  max-width: 260px;
+  scroll-snap-align: start;
+}
+
+
+/* Individual post cards */
+.viewPosts li {
+  list-style: none;
+  background-color: #f0e4d7;
+  border-radius: 10px;
+  width: 100%;           /* fills column, not full grid */
+  max-width: 100%;       /* ensures no overflow */
+  font-size: 1rem;
+  line-height: 1.5;
+  break-inside: avoid;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  color: #3a2e2e;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 1rem; /* was 1.25rem */
+}
+
+
+.viewPosts li:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+  color: #3a2e2e
 }
