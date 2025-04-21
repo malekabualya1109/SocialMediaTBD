@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
-
 function ViewPosts({ posts, setPosts, username }) {
   const [commentInputs, setCommentInputs] = useState({});
-  
-
 
   const fetchPosts = async () => {
     try {
@@ -28,7 +25,7 @@ function ViewPosts({ posts, setPosts, username }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: username, // Replace with actual user ID
+          username: username, 
           original_post_id: originalPostId,
         }),
       });
@@ -92,7 +89,7 @@ function ViewPosts({ posts, setPosts, username }) {
       const response = await fetch(`http://127.0.0.1:5000/api/posts/${postId}/comment`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({username, text: commentText }), // Replace with dynamic user_id
+        body: JSON.stringify({ username, text: commentText }),
       });
 
       const data = await response.json();
@@ -117,43 +114,45 @@ function ViewPosts({ posts, setPosts, username }) {
       {posts.length === 0 ? (
         <p>No posts available.</p>
       ) : (
-        <ul>
-          {posts.map((post) => (
-            <li key={post.id} style={{ marginBottom: '30px' }}>
-              <strong>{post.username}:</strong> {post.content}
-              <br />
-              <small>{new Date(post.timestamp).toLocaleString()}</small>
-              <br />
-              <em>Reposts: {post.repost_count || 0}</em>
-              <br />
-              <button onClick={() => handleRepost(post.id)}>Repost</button>
-              <button onClick={() => handleLike(post.id)}>Like ({post.likes || 0})</button>
-              {post.user_id === 1 && post.content.startsWith("Repost from User") && (
-                <button onClick={() => handleDelete(post.id)}>Delete Repost</button>
-              )}
+        <div className="postsGrid">
+          <ul>
+            {posts.map((post) => (
+              <li key={post.id} style={{ marginBottom: '30px' }}>
+                <strong>{post.username}:</strong> {post.content}
+                <br />
+                <small>{new Date(post.timestamp).toLocaleString()}</small>
+                <br />
+                <em>Reposts: {post.repost_count || 0}</em>
+                <br />
+                <button onClick={() => handleRepost(post.id)}>Repost</button>
+                <button onClick={() => handleLike(post.id)}>Like ({post.likes || 0})</button>
+                {post.user_id === 1 && post.content.startsWith("Repost from User") && (
+                  <button onClick={() => handleDelete(post.id)}>Delete Repost</button>
+                )}
 
-              <div style={{ marginTop: '10px' }}>
-                <input
-                  type="text"
-                  placeholder="Add a comment"
-                  value={commentInputs[post.id] || ''}
-                  onChange={(e) => handleCommentInputChange(post.id, e.target.value)}
-                />
-                <button onClick={() => handleComment(post.id)}>Comment</button>
-              </div>
+                <div style={{ marginTop: '10px' }}>
+                  <input
+                    type="text"
+                    placeholder="Add a comment"
+                    value={commentInputs[post.id] || ''}
+                    onChange={(e) => handleCommentInputChange(post.id, e.target.value)}
+                  />
+                  <button onClick={() => handleComment(post.id)}>Comment</button>
+                </div>
 
-              {post.comments && post.comments.length > 0 && (
-                <ul>
-                  {post.comments.map((c, idx) => (
-                    <li key={idx}>
-                      <strong>{c.username}:</strong> {c.text}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
+                {post.comments && post.comments.length > 0 && (
+                  <ul>
+                    {post.comments.map((c, idx) => (
+                      <li key={idx}>
+                        <strong>{c.username}:</strong> {c.text}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );
