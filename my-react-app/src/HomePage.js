@@ -39,6 +39,30 @@ function HomePage(){
 
     const navigate = useNavigate();
 
+    const [profilePic, setProfilePic] = useState(null);
+  const [selectedStory, setSelectedStory] = useState(null); // <-- for popup
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+    //mona
+    useEffect(() => {
+      const savedProfilePic = localStorage.getItem("profilePic");
+      if (savedProfilePic) {
+        setProfilePic(savedProfilePic);
+      }
+    }, []);
+
+    //mona
+    const handleStoryClick = (story) => {
+      setSelectedStory(story);
+      setIsModalOpen(true);
+    };
+
+    //mona
+    const closeModal = () => {
+      setIsModalOpen(false);
+      setSelectedStory(null);
+    };
+
     //mona: fetching stories
     useEffect(() => {
       fetch('http://localhost:5000/api/stories')
@@ -266,21 +290,61 @@ const handleSignUp = async () => {
                 
                 {/* Shoe uploaded story circles */}
                 <div className="storyContainer">
-                  {uploadedStories.length > 0 && (
+                    {uploadedStories.length > 0 && (
                     <div style={{ display: 'flex', overflowX: 'scroll', padding: '10px' }}>
-                      {uploadedStories.map((story, index) => (
-                        <div key= { index } className="storyCircle">
-                          <img
-                            src={`http://localhost:5000/uploads/${story.filename}`}
-                            alt={`Story ${index}`}
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                            onError={(e) => console.log("Image load error: ", e.target.src)}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                    {uploadedStories.map((story, index) => (
+                      <div
+                        key={index}
+                        className="storyCircle"
+                        onClick={() => handleStoryClick(story)}
+                        style={{ cursor: "pointer" }}
+                      >
+             {profilePic && (
+                  <img
+                    src={profilePic}
+                    alt="User Profile"
+                    className="miniProfilePic"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      borderRadius: '50%',
+                      marginBottom: '5px',
+                    }}
+                  />
+                )}
+
+              </div>
+            ))}
+          </div>
+          )}
+        </div>
+        {/* Modal for showing story */}
+        {isModalOpen && selectedStory && (
+  <div className="modalOverlay" onClick={closeModal}>
+    <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+      {/* Detect and render image or video */}
+      {selectedStory.filename.match(/\.(mp4|webm|ogg)$/i) ? (
+        <video
+          controls
+          autoPlay
+          style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: '8px' }}
+        >
+          <source src={`http://localhost:5000/uploads/${selectedStory.filename}`} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      ) : (
+        <img
+          src={`http://localhost:5000/uploads/${selectedStory.filename}`}
+          alt="Story Content"
+          style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: '8px' }}
+        />
+      )}
+
+      <button onClick={closeModal} className="closeButton">Close</button>
+    </div>
+  </div>
+)}
+
                 
                 {/*Maria's link*/}
                 <header className = "daily-forum">
