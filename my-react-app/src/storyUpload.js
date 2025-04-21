@@ -53,15 +53,32 @@ function StoryUpload() {
                 headers: { 'Content-Type': 'multipart/form-data' },
                 onUploadProgress: (progressEvent) => {
                     // calculate and update the upload progress percentage
-                    const percent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                    setProgress(percent); // update the progress state
-                }
-            });
+                    const realPercent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                
+                // Instead of instantly jumping to realPercent,
+                // we can simulate a slower progression.
+                    let current = progress;
+                    const interval = setInterval(() => {
+                    current += 1;
+                    if (current >= realPercent) {
+                        clearInterval(interval);
+                        setProgress(realPercent);
+
+                        if (realPercent === 100) {
+                            setTimeout(() => {
+                                navigate('/');
+                                console.log('Navigated to homepage');
+                            }, 1000);
+                        }
+                    } else {
+                        setProgress(current);
+                    }
+                }, 20); // 20ms delay between each % increase
+            }
+        });
 
             console.log('Upload Successful:', response.data); // log success response
             
-            navigate('/')
-            console.log('navigated to homepage')
             setUploadedStories((prevStories) => [
                 ...prevStories,
                 response.data.metadata,
@@ -77,9 +94,9 @@ function StoryUpload() {
             <input type="file" accept="image/*,video/*" onChange={handleChange} />
 
             {preview && preview.type === 'video' && (
-                <div className="previewContainer" style={{ width: '100%', maxHeight: '500px', maxWidth: '500px' }}>
+                <div className="previewContainer" style={{ width: '100%', maxHeight: '300px', maxWidth: '300px', marginBottom: '300px' }}>
                     <p>Preview:</p>
-                    <video width="100%" controls autoPlay>
+                    <video width="100%" controls autoPlay muted playsInline onError={(e) => console.error('Video playback error:', e)}>
                         <source src={preview.url} type={file && file.type} />
                         {/* Log the URL and file type for debugging */}
                         {console.log('Video Preview URL:', preview.url)}
@@ -92,7 +109,7 @@ function StoryUpload() {
             {preview && preview.type === 'image' && (
                     <div className="previewContainer">
                         <p>Preview:</p>
-                            <img src={preview.url} alt="Preview" style={{ maxWidth: '50px', maxHeight: '50px', marginBottom: '1px' }} />
+                            <img src={preview.url} alt="Preview" style={{ maxWidth: '300px', maxHeight: '300px', marginBottom: '1px' }} />
                     </div>
             )}
 
@@ -106,27 +123,7 @@ function StoryUpload() {
                     <p style={{ textAlign: 'center', fontWeight: 'bold' }}>{progress}%</p>
                 </div>
             )}
-            
-
-            {/*<div className="storyContainer">
-                {uploadedStories.length > 0 && (
-                    <div style={{ display: 'flex', overflowX: 'scroll', padding: '10px' }}>
-                        {uploadedStories.map((story, index) => (
-                            <div
-                                key={index}
-                                className="storyCircle"
-                            >
-                                <img
-                                    src={`http://localhost:5000/uploads/${story.filename}`} // Correct image URL
-                                    alt={`Story ${index}`}
-                                    onError={(e) => console.log("Image load error:", e.target.src)}
-                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                />
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>*/}
+    
         </div>
     );
 }
