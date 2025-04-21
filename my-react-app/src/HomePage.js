@@ -7,12 +7,15 @@ import './smallerPage.css';
 import './user-profile.css';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
+import Interest from './Interest';
 
 function HomePage(){
     const [message, setMessage] = useState('');
     const [content, setContent] = useState('');
     const [postMessage, setPostMessage] = useState('');
-    const [posts, setPosts] = useState([]);  
+    const [posts, setPosts] = useState([]); 
+
+ 
   
     // Fatimah: variables for users 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -29,7 +32,7 @@ function HomePage(){
     const [showInterestsPrompt, setShowInterestsPrompt] = useState(false);
   
     //Fatimah:user id for the interest
-    const[userId, setUserId] = useState(false);
+    const[userId, setUserId] = useState(null); // nul or false
 
     //mona: to upload image
     const [uploadedStories, setUploadedStories] = useState([]);
@@ -188,12 +191,15 @@ const handleSignUp = async () => {
 
     if (response.ok) {
       setIsAuthenticated(true);
+      setUserId(data.user_id);
+      setShowInterestsPrompt(true);
+
       // Store authentication info as needed
-      localStorage.setItem('isAuthenticated', false);
-      localStorage.setItem('username', username);
+      // localStorage.setItem('isAuthenticated', false);
+      // localStorage.setItem('username', username);
       
       // Navigate to the interests page and pass the user ID
-      navigate('/interests', { state: { userId: data.user_id } });
+      // navigate('/interests', { state: { userId: data.user_id } });
     } else {
       setAuthMessage(data.error || 'Signup failed.');
     }
@@ -201,8 +207,6 @@ const handleSignUp = async () => {
     setAuthMessage('Error connecting to server');
   }
 };
-
-
     
     /*Emma */
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
@@ -221,7 +225,6 @@ const handleSignUp = async () => {
             <h1>Welcome to Tea Talks</h1>
           </header>
       )}
-          
       
           {isAuthenticated && (
             <>
@@ -364,6 +367,8 @@ const handleSignUp = async () => {
                   <p>{postMessage}</p>
                 </div>
                 {/* View Posts (FR2) (Malek) */}
+
+
   
   
           {/* This interest prompt only shows if someone signs up */}
@@ -372,6 +377,18 @@ const handleSignUp = async () => {
               </section>
             </div>
           )}
+        {/* Interest modal */}
+      {isAuthenticated && showInterestsPrompt && userId && (
+        <Interest
+          userId={userId}
+          onClose={() => setShowInterestsPrompt(false)}
+          onSave={() => {
+            // parent handles “after save” behavior:
+            setShowInterestsPrompt(false);
+            navigate('/');
+          }}
+        />
+      )}
         </div> 
       );
     }

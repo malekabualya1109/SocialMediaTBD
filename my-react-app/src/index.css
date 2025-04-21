@@ -153,3 +153,94 @@ ul li > ul li{
   height: 35rem;  
   margin-left: 30rem; 
 }
+
+
+/* in userAccount.css or a new modal.css */
+.interest-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.interest-modal {
+  background: #fff;
+  padding: 7rem; /*this makes the window bigger*/
+  border-radius: 10px;
+  max-width: 700px;
+  width: 95%;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+}
+
+
+.interest-option {
+  display: block;
+  margin: 0.75rem 0;             /* a little more breathing room */
+  font-size: 1.1rem;             /* larger text */
+}
+
+
+.interest-buttons {
+  margin-top: 2rem;              /* separate buttons from options */
+}
+
+.interest-buttons button {
+  margin-right: 1.5rem;          /* more spacing between buttons */
+  padding: 0.75rem 1.5rem;       /* bigger click targets */
+  font-size: 1rem;               /* larger button text */
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.interest-buttons > button:hover {
+  background-color:#6a012b; 
+}
+/* container grid */
+.interest-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+/* each card */
+.interest-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+/* hover state */
+.interest-card:hover {
+  border-color: #aaa;
+  background: #fafafa;
+}
+
+/* selected state */
+.interest-card.selected {
+  border-color: #6a012b;
+  background: #fbe9f1;
+}
+
+/* hide the real checkbox, but keep it accessible */
+.interest-card input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* label text */
+.interest-label {
+  margin-left: 0.5rem;
+  font-size: 1rem;
+  user-select: none;
+}

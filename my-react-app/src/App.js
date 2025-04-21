@@ -63,7 +63,6 @@ function App() {
         <Route path="/" element={<HomePage /> } />
         <Route path="/profile/:username" element={<UserProfile />} /> 
         <Route path="/upload-story" element={<StoryUpload />} />
-        <Route path="/interests" element={<Interest />} />
         <Route path="/settings" element={<SettingsPage username={username} isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} setUsername={setUsername} password = {password} />} />
         <Route path="/daily-forum" element={<DailyForum username={"User"} />} />
         <Route path="/bot-forum" element={<BotForum username={"User"} />} /> 
