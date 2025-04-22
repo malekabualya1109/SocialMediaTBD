@@ -9,6 +9,15 @@ function UserProfile() {
   const [isFriend, setIsFriend] = useState(false); // Track friend state - Maria
   const { username } = useParams();
   const currentUser = localStorage.getItem("username"); //Current user used for comparison - Maria
+  const [imageSrc, setImageSrc] = useState(null); // for preview
+
+const handleFileChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const url = URL.createObjectURL(file);
+    setImageSrc(url);
+  }
+};
 
   useEffect(() => {
     const savedProfilePic = localStorage.getItem("profilePic");
@@ -65,10 +74,28 @@ function UserProfile() {
         const base64String = reader.result;
         setProfilePic(base64String);
         localStorage.setItem("profilePic", base64String);
+        fetch("http://localhost:5000/api/update_profile_pic", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            username,
+            profile_pic: base64String
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log("Profile pic updated:", data.message);
+        })
+        .catch(err => console.error("Error updating profile pic:", err));
+        
       };
       reader.readAsDataURL(file);
     }
   };
+
+   
 
   const toggleFriend = () => {
     // Toggle friend logic stored locally - Maria
@@ -83,7 +110,10 @@ function UserProfile() {
 
     allFriends[currentUser] = Array.from(myFriends);
     localStorage.setItem("friends", JSON.stringify(allFriends));
+
     setIsFriend(!isFriend);
+    
+
   };
 
   return (
@@ -208,12 +238,28 @@ function UserProfile() {
     )} 
       </section>
       <section className="bottom">
-        <div className="area1" />
-        <div className="area2" />
-        <div className="area3" />
-        <div className="area4" />
-        <div className="area5" />
-        <div className="area6" />
+        <div className="area1"> 
+          <h2>Upload Your Music</h2> 
+        </div> 
+        <div className="area2">
+  <h2>Upload Your Photos</h2>
+  <input
+    type="file"
+    accept="image/*"
+    id="photoUpload"
+    style={{ display: 'none' }}
+    onChange={handleFileChange}
+  />
+  <label htmlFor="photoUpload" className="upload-button">
+    Upload Picture
+  </label>
+
+  {imageSrc && (
+    <div style={{ marginTop: '1em' }}>
+      <img src={imageSrc} alt="Preview" style={{ maxWidth: '300px' }} />
+    </div>
+  )}
+</div>
       </section>
     </div>
   );
