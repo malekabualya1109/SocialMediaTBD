@@ -65,6 +65,14 @@ header, .sidebar, .footer, .friendbar, .main{
   margin: 0; 
   border-radius: 5px; 
   width: 15rem; 
+  font-size: 1.2rem; 
+}
+
+.friendbar > h4 {
+  background-color: #f37db8;
+  border-radius: 5px; 
+  margin: 15px; 
+  margin-bottom: 5px; 
 }
 
 /*Footer layout*/
@@ -246,3 +254,24 @@ header, .sidebar, .footer, .friendbar, .main{
   z-index: 1;
   color: #3a2e2e
 }
+
+.add-btn {
+  background-color: pink;     
+  border: 1px solid black;   
+  color: white;           
+  border-radius: 50%;        
+  width: 25px;             
+  height: 25px;              
+  font-size: 1.2rem;       
+  cursor: pointer;             
+  display: inline-flex;       
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px; 
+  transition: background 0.2s;  
+}
+
+.add-btn:hover {
+  background-color: #ff69b4;   
+}
+

@@ -6,6 +6,8 @@ from config import mysql_password
 from uploadstory import uploadstory_bp
 from tkinter import * #this is for the message box
 import getpass  # Maria's changes: used for password prompt
+from werkzeug.utils import secure_filename
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'mov', 'avi'}
 
 #the python sql libra
 import pymysql
@@ -245,6 +247,157 @@ def get_profile(username):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+    
+
+@app.route('/api/users', methods=['GET'])
+def get_all_users():
+    try:
+        theSQL = pymysql.connect(host='localhost', user='root', password=mysql_password, database='userdata')
+        mycursor = theSQL.cursor()
+
+        query = 'SELECT id, username FROM data'
+        mycursor.execute(query)
+        users = mycursor.fetchall()
+
+        result = [{"id": row[0], "username": row[1]} for row in users]
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    
+@app.route('/api/friends/<username>', methods=['GET'])
+def get_friends(username):
+    try:
+        connection = pymysql.connect(
+            host='localhost',
+            user='root',
+            password=mysql_password,
+            database='userdata',
+            cursorclass=pymysql.cursors.DictCursor
+        )
+        cursor = connection.cursor()
+
+        # 1) ensure table exists so SELECTs never fail
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS friendships (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                friend_id INT NOT NULL,
+                UNIQUE(user_id, friend_id)
+            );
+        ''')
+
+        # 2) lookup user
+        cursor.execute("SELECT id FROM data WHERE username = %s", (username,))
+        user = cursor.fetchone()
+        if not user:
+            return jsonify([])  # <— return empty array if no such user
+
+        user_id = user["id"]
+
+        # 3) get friend IDs
+        cursor.execute("SELECT friend_id FROM friendships WHERE user_id = %s", (user_id,))
+        friend_ids = [row["friend_id"] for row in cursor.fetchall()]
+        if not friend_ids:
+            return jsonify([])
+
+        # 4) get their usernames
+        format_strings = ','.join(['%s'] * len(friend_ids))
+        cursor.execute(f"SELECT username FROM data WHERE id IN ({format_strings})", friend_ids)
+        friends = cursor.fetchall()
+
+        cursor.close()
+        connection.close()
+
+        # 5) always return an array of objects
+        return jsonify([{"username": f["username"]} for f in friends])
+
+    except Exception as e:
+        # on any DB error, still return an empty list
+        app.logger.error(f"Error in get_friends: {e}")
+        return jsonify([])
+
+
+
+    
+
+@app.route('/api/add_friend_by_username', methods=['POST'])
+def add_friend_by_username():
+    data = request.get_json()
+    username = data.get('username')
+    friend_username = data.get('friend_username')
+
+    if not username or not friend_username:
+        return jsonify({"error": "Missing username or friend_username"}), 400
+
+    if username == friend_username:
+        return jsonify({"error": "Cannot friend yourself"}), 400
+
+    try:
+        connection = pymysql.connect(host='localhost', user='root', password=mysql_password, database='userdata')
+        cursor = connection.cursor()
+
+        # Fetch IDs for both users
+        cursor.execute("SELECT id FROM data WHERE username = %s", (username,))
+        user = cursor.fetchone()
+        cursor.execute("SELECT id FROM data WHERE username = %s", (friend_username,))
+        friend = cursor.fetchone()
+
+        if not user or not friend:
+            return jsonify({"error": "User not found"}), 404
+
+        user_id = user[0]
+        friend_id = friend[0]
+
+        # Create the friendships table if it doesn’t exist
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS friendships (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                friend_id INT NOT NULL,
+                UNIQUE(user_id, friend_id)
+            )
+        ''')
+
+        # Check if already friends
+        cursor.execute("SELECT * FROM friendships WHERE user_id = %s AND friend_id = %s", (user_id, friend_id))
+        if cursor.fetchone():
+            return jsonify({"message": "Already friends!"}), 200
+
+        # Insert both ways
+        cursor.execute("INSERT INTO friendships (user_id, friend_id) VALUES (%s, %s)", (user_id, friend_id))
+        cursor.execute("INSERT INTO friendships (user_id, friend_id) VALUES (%s, %s)", (friend_id, user_id))
+
+        connection.commit()
+        connection.close()
+
+        return jsonify({"message": "Friend added successfully!"}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    
+
+@app.route('/api/user/<username>', methods=['GET'])
+def get_user_by_username(username):
+    try:
+        connection = pymysql.connect(host='localhost', user='root', password=mysql_password, database='userdata')
+        cursor = connection.cursor()
+
+        query = "SELECT id, username FROM data WHERE username = %s"
+        cursor.execute(query, (username,))
+        user = cursor.fetchone()
+
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+
+        return jsonify({"user_id": user[0], "username": user[1]})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
 
 
 

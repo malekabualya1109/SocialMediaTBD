@@ -76,17 +76,13 @@ function SettingsPage({username, setIsAuthenticated, password}) {
   return (
     <div className="Setting-Page">
         <button className= "buttons" onClick={accountDetails}>Account Details</button>
-        <button className= "buttons"onClick={() => userNameBoolean()}>Change Username</button>
-        <button className= "buttons"onClick={() => passwordBoolean()}>Change Password</button>
-        <button className= "buttons"onClick={handleLogout}>Logout</button>
-
         {showInfo && (
             <div>
                 <p>Username: {username}</p> 
                 <p>Account Details</p>
             </div>
         )}
-
+        <button className= "buttons"onClick={() => userNameBoolean()}>Change Username</button>
         {usernameBool && (
             <div>
                 <input type = "username" placeholder = "new username" 
@@ -94,7 +90,7 @@ function SettingsPage({username, setIsAuthenticated, password}) {
                 <button id="updatebutton" onClick={() => changeuserName(newUserName)}>Update</button>
             </div>
         )}
-
+        <button className= "buttons"onClick={() => passwordBoolean()}>Change Password</button>
         {setpassword && (
             <div>
                 <input type = "username" placeholder = "new password" 
@@ -103,6 +99,7 @@ function SettingsPage({username, setIsAuthenticated, password}) {
             </div>
 
         )}
+        <button className= "buttons"onClick={handleLogout}>Logout</button>
 
     </div>
 

@@ -14,6 +14,8 @@ function HomePage(){
     const [content, setContent] = useState('');
     const [postMessage, setPostMessage] = useState('');
     const [posts, setPosts] = useState([]); 
+    const [users, setUsers] = useState([]);
+    const [friends, setFriends] = useState([]);
 
  
   
@@ -126,6 +128,77 @@ function HomePage(){
         .then((data) => setMessage(data))
         .catch((error) => console.log('Error fetching data:', error));
     }, []);
+    useEffect(() => {
+      fetch("http://localhost:5000/api/users")
+        .then((res) => res.json())
+        .then((data) => {
+          setUsers(data); //Get all the users available in the db (just something for now...)
+        });
+    }, []);
+
+    useEffect(() => {
+      if (username) {
+        fetch(`http://localhost:5000/api/user/${username}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.user_id) {
+              setUserId(data.user_id);
+            }
+          })
+          .catch(err => console.error("Error fetching user by username:", err));
+      }
+    }, [username]);
+
+    useEffect(() => {
+      if (username) {
+        fetch(`http://localhost:5000/api/friends/${username}`)
+          .then((res) => res.json())
+          .then((data) => {
+            setFriends(data); // assuming backend returns an array of friend usernames
+          })
+          .catch((err) => console.error("Error fetching friends:", err));
+      }
+    }, [username]);
+    
+    
+    
+    const addFriend = (friendUsername) => {
+      // Make the API request to add a friend
+      fetch("http://localhost:5000/api/add_friend_by_username", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          friend_username: friendUsername,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.message) {
+            // If the friend was added successfully, show an alert
+            alert(data.message);
+            // Now we update the list of friends
+            fetch(`http://localhost:5000/api/friends/${username}`)
+              .then(res => res.json())
+              .then((friendsData) => {
+                setFriends(friendsData); // Update the friends list state
+              });
+          } else {
+            // Handle any errors here (e.g., already friends or friend not found)
+            alert(data.error || "An error occurred");
+          }
+        })
+        .catch((err) => {
+          console.error("Error adding friend:", err);
+          alert("There was an error adding the friend.");
+        });
+    };
+    
+    
+    
+    
   
     // Function to handle post submission (MALEK)
     const handlePost = async () => {
@@ -261,14 +334,14 @@ const handleSignUp = async () => {
               <ul>
                 <li>Notifications</li>
                 <li>
-                  <Link to={`/profile/${username}`}>User Profile</Link>
+                <Link to={`/profile/${username}`} style={{ textDecoration: 'none', color: 'inherit' }}>User Profile</Link>
                 </li>
                 <li>
                   <div className="setting" onClick={toggleDropdown}>
                     Settings
                     {isDropdownVisible && (
                       <ul className="setting-menu">
-                        <li><Link to="/settings">Edit Account</Link></li>
+                        <li><Link to="/settings" style={{ textDecoration: 'none', color: 'inherit' }}>Edit Account</Link></li>
                         <button onClick={handleLogout}>Logout</button>
                       </ul>
                     )}
@@ -348,8 +421,29 @@ const handleSignUp = async () => {
             </div>
           </section>
           <section className="friendbar">
-                <h4>Friends List</h4>
-              </section>
+          <h4>Suggested Friends:</h4>
+          {users
+            .filter(user => 
+              user.username !== username &&
+              !friends.some(friend => friend.username === user.username)
+            )
+
+            .map((user, index) => (
+              <div key={index} style={{ marginBottom: "10px", display: "flex", alignItems: "center" }}>
+              <span style={{ color: "rgb(157, 16, 73)" }}>{user.username}</span>
+              <button className="add-btn" onClick={() => addFriend(user.username)} style={{ marginLeft: "auto" }}>+</button>
+              </div>
+
+            ))}
+
+            <h4>Friends:</h4>
+            {friends.length === 0 && <p>No friends yet 😢</p>}
+            {friends.map((friend, index) => (
+            <div key={index}>
+            <span style={{ color: "rgb(157, 16, 73)" }}>{friend.username}</span>
+            </div>
+            ))}
+            </section>
   
               <footer className="footer">
                 <p>Copyright of WSU Computer Science Students</p>
