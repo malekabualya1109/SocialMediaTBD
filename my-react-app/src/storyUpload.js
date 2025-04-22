@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios'; // to make API requests
 import { useNavigate } from 'react-router-dom';
+import './story.css';
 
 function StoryUpload() {
     const [file, setFile] = useState(null);  /* state to manage the selected file */
@@ -52,33 +53,34 @@ function StoryUpload() {
             const response = await axios.post('http://localhost:5000/api/uploadStory', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
                 onUploadProgress: (progressEvent) => {
-                    // calculate and update the upload progress percentage
+                    // Calculate the real progress percentage
                     const realPercent = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                
-                // Instead of instantly jumping to realPercent,
-                // we can simulate a slower progression.
+          
+                    // If real progress is less than 100, simulate a smooth progression to 100
                     let current = progress;
-                    const interval = setInterval(() => {
-                    current += 1;
-                    if (current >= realPercent) {
-                        clearInterval(interval);
-                        setProgress(realPercent);
-
-                        if (realPercent === 100) {
-                            setTimeout(() => {
-                                navigate('/');
-                                console.log('Navigated to homepage');
-                            }, 1000);
+                    if (realPercent < 100) {
+                      // Gradually fill the progress bar even if real progress is not at 100
+                      const interval = setInterval(() => {
+                        if (current < 100) {
+                          current += 1;
+                          setProgress(current);
+                        } else {
+                          clearInterval(interval);
+                          // Once we reach 100, wait for 1 second to allow for the visual effect
+                          setTimeout(() => {
+                            navigate('/'); // Navigate to homepage after the progress bar fills
+                            console.log('Navigated to homepage');
+                          }, 1000); // Delay before navigating
                         }
+                      }, 30); // Update progress every 60ms
                     } else {
-                        setProgress(current);
+                      setProgress(100);
                     }
-                }, 20); // 20ms delay between each % increase
-            }
-        });
+                  },
+                });
 
             console.log('Upload Successful:', response.data); // log success response
-            
+
             setUploadedStories((prevStories) => [
                 ...prevStories,
                 response.data.metadata,
@@ -89,43 +91,46 @@ function StoryUpload() {
     };
     
     return (
-        <div className="storySection">
-            <h2>Upload Story</h2>
+        <div className="story-section">
+          <h2 className="title">📸 Upload Story</h2>
+      
+          <label className="file-upload">
             <input type="file" accept="image/*,video/*" onChange={handleChange} />
-
-            {preview && preview.type === 'video' && (
-                <div className="previewContainer" style={{ width: '100%', maxHeight: '300px', maxWidth: '300px', marginBottom: '300px' }}>
-                    <p>Preview:</p>
-                    <video width="100%" controls autoPlay muted playsInline onError={(e) => console.error('Video playback error:', e)}>
-                        <source src={preview.url} type={file && file.type} />
-                        {/* Log the URL and file type for debugging */}
-                        {console.log('Video Preview URL:', preview.url)}
-                        {console.log('Video Type:', file && file.type)}
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-            )}
-
-            {preview && preview.type === 'image' && (
-                    <div className="previewContainer">
-                        <p>Preview:</p>
-                            <img src={preview.url} alt="Preview" style={{ maxWidth: '300px', maxHeight: '300px', marginBottom: '1px' }} />
-                    </div>
-            )}
-
-            {file && <p>Selected File: {file.name}</p>}
-
-            <button onClick={handleUpload}>Upload</button>
-
-            {progress > 0 && progress < 100 && (
-                <div style={{ width: '100%', backgroundColor: '#f3f3f3', borderRadius: '8px', marginTop: '10px' }}>
-                    <div style={{ width: `${progress}%`, height: '10px', backgroundColor: '#4f0000', borderRadius: '8px' }}></div>
-                    <p style={{ textAlign: 'center', fontWeight: 'bold' }}>{progress}%</p>
-                </div>
-            )}
-    
+          </label>
+      
+          {preview && (
+            <div className="preview-container">
+              <p>Preview:</p>
+              {preview.type === 'image' ? (
+                <img src={preview.url} alt="Preview" className="media-preview" />
+              ) : (
+                <video
+                  className="media-preview"
+                  controls
+                  autoPlay
+                  muted
+                  playsInline
+                  onError={(e) => console.error('Video playback error:', e)}
+                >
+                  <source src={preview.url} type={file?.type} />
+                  Your browser does not support the video tag.
+                </video>
+              )}
+            </div>
+          )}
+      
+          {file && <p className="file-info">Selected File: {file.name}</p>}
+      
+          <button className="upload-button" onClick={handleUpload}>Upload</button>
+      
+          {progress > 0 && progress < 100 && (
+            <div className="progress-bar">
+              <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+              <p>{progress}%</p>
+            </div>
+          )}
         </div>
-    );
+      );
 }
 
 export default StoryUpload;
