@@ -243,124 +243,111 @@ const handleSignUp = async () => {
   
     return(
       <div className="App"> 
-  
+    
       {!isAuthenticated && (
-          <header className="navigation1">
-            <h1>Welcome to Tea Talks</h1>
-          </header>
+        <header className="navigation1">
+          <h1>Welcome to Tea Talks</h1>
+        </header>
       )}
       
-          {isAuthenticated && (
-            <>
-              <header className="header">
-              <div className="mugIcon1">
-                <i className="fa-solid fa-mug-hot"></i>
-                <h1>Tea Talks</h1>
+      {isAuthenticated && (
+        <>
+          <header className="header">
+            <div className="mugIcon1">
+              <i className="fa-solid fa-mug-hot"></i>
+              <h1>Tea Talks</h1>
+            </div>
+            <div className="navigationHeader">
+              <ul>
+                <li>Notifications</li>
+                <li>
+                  <Link to={`/profile/${username}`}>User Profile</Link>
+                </li>
+                <li>
+                  <div className="setting" onClick={toggleDropdown}>
+                    Settings
+                    {isDropdownVisible && (
+                      <ul className="setting-menu">
+                        <li><Link to="/settings">Edit Account</Link></li>
+                        <button onClick={handleLogout}>Logout</button>
+                      </ul>
+                    )}
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </header>
+    
+          <section className="sidebar">
+            {/* Upload Story Section */}
+            <header className="storySection">
+              <div className="uploadStory-link">
+                <Link to="/upload-story" className="pretty-button">New Story</Link>
               </div>
-              <div className = "navigationHeader">
-                <ul>
-                  <li>Notifications</li>
-                  <li>
-                    <Link to={`/profile/${username}`}>
-                      User Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <div className="setting" onClick={toggleDropdown}>
-                      Settings
-                      {isDropdownVisible && (
-                        <ul className="setting-menu">
-                          <li><Link to="/settings">Edit Account</Link></li>
-                          <button onClick={handleLogout}>Logout</button>
-                        </ul>
+            </header>
+    
+            {/* Show uploaded story circles */}
+            <div className="storyContainer">
+              {uploadedStories.length > 0 && (
+                <div style={{ display: 'flex', overflowX: 'scroll', padding: '10px' }}>
+                  {uploadedStories.map((story, index) => (
+                    <div
+                      key={index}
+                      className="storyCircle"
+                      onClick={() => handleStoryClick(story)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {profilePic && (
+                        <img
+                          src={profilePic}
+                          alt="User Profile"
+                          className="miniProfilePic"
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            borderRadius: '50%',
+                            marginBottom: '5px',
+                          }}
+                        />
                       )}
                     </div>
-                  </li>
-                </ul>
+                  ))}
+                </div>
+              )}
+            </div>
+    
+            {/* Modal for showing story */}
+            {isModalOpen && selectedStory && (
+              <div className="modalOverlay" onClick={closeModal}>
+                <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+                  {selectedStory.filename.match(/\.(mp4|webm|ogg)$/i) ? (
+                    <video
+                      controls
+                      autoPlay
+                      style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: '8px' }}
+                    >
+                      <source src={`http://localhost:5000/uploads/${selectedStory.filename}`} type="video/mp4" />
+                      Your browser does not support the video tag.
+                    </video>
+                  ) : (
+                    <img
+                      src={`http://localhost:5000/uploads/${selectedStory.filename}`}
+                      alt="Story Content"
+                      style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: '8px' }}
+                    />
+                  )}
+                  <button onClick={closeModal} className="closeButton">Close</button>
+                </div>
               </div>
-              </header>
-              
-     
-              <section className="sidebar">
-                <header className="storySection">
-                  <div className="uploadStory-link">
-                    <Link to="/upload-story">New Story</Link>
-                  </div>
-                </header>
-                
-                {/* Shoe uploaded story circles */}
-                <div className="storyContainer">
-                    {uploadedStories.length > 0 && (
-                    <div style={{ display: 'flex', overflowX: 'scroll', padding: '10px' }}>
-                    {uploadedStories.map((story, index) => (
-                      <div
-                        key={index}
-                        className="storyCircle"
-                        onClick={() => handleStoryClick(story)}
-                        style={{ cursor: "pointer" }}
-                      >
-             {profilePic && (
-                  <img
-                    src={profilePic}
-                    alt="User Profile"
-                    className="miniProfilePic"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      borderRadius: '50%',
-                      marginBottom: '5px',
-                    }}
-                  />
-                )}
-
-              </div>
-            ))}
-          </div>
-          )}
-        </div>
-        {/* Modal for showing story */}
-        {isModalOpen && selectedStory && (
-  <div className="modalOverlay" onClick={closeModal}>
-    <div className="modalContent" onClick={(e) => e.stopPropagation()}>
-      {/* Detect and render image or video */}
-      {selectedStory.filename.match(/\.(mp4|webm|ogg)$/i) ? (
-        <video
-          controls
-          autoPlay
-          style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: '8px' }}
-        >
-          <source src={`http://localhost:5000/uploads/${selectedStory.filename}`} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      ) : (
-        <img
-          src={`http://localhost:5000/uploads/${selectedStory.filename}`}
-          alt="Story Content"
-          style={{ maxWidth: '100%', maxHeight: '80vh', borderRadius: '8px' }}
-        />
-      )}
-
-      <button onClick={closeModal} className="closeButton">Close</button>
-    </div>
-  </div>
-)}
-
-                
-                {/*Maria's link*/}
-                <header className = "daily-forum">
-                  <div className = "dailyForum-link">
-                    <Link to="/daily-forum">Daily Forum</Link>
-                  </div>
-                </header>
-                {/*Chat Ai link*/}
-                <header className="chat-ai">
-                  <div className="chatAi-link">
-                    <Link to="/chat-ai">Chat with Ai</Link>
-                  </div>
-                </header>
-              </section>
-  
-              <section className="friendbar">
+            )}
+    
+            {/* Button-style links */}
+            <div className="sidebar-buttons">
+              <Link to="/daily-forum" className="pretty-button">Daily Forum</Link>
+              <Link to="/chat-ai" className="pretty-button">Chat with Ai</Link>
+            </div>
+          </section>
+          <section className="friendbar">
                 <h4>Friends List</h4>
               </section>
   
@@ -369,8 +356,6 @@ const handleSignUp = async () => {
               </footer>
             </>
           )}
-
-          
       
           {/* Display the fetched message from Flask */}
           {/* <p>{message || 'Backend data stuff'}</p> */}
@@ -461,7 +446,7 @@ const handleSignUp = async () => {
           }}
         />
       )}
-        </div> 
-      );
-    }
+      </div>
+    );
+  }
     export default HomePage;
